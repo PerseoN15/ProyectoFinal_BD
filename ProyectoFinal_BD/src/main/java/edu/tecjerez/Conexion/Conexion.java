@@ -4,6 +4,7 @@
  */
 package Conexion;
 
+import MODELO.alumno;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,66 +20,65 @@ public class Conexion {
     private static PreparedStatement pstm;
     private static ResultSet rs;
 
-    private Conexion(){
-        // Busa el driver para conectarse a postgrate
+    private Conexion() {
+        // Busca el driver y establece la conexión
         try {
             Class.forName("org.postgresql.Driver");
             String URL = "jdbc:postgresql://localhost:5432/proyecto_Tutorias";
-            conexion = DriverManager.getConnection( URL,"root","pass123" );
+            conexion = DriverManager.getConnection(URL, "root", "pass123");
         } catch (ClassNotFoundException e) {
-            System.out.println("Error en el controlador de conexión a PostgreSQL");
+            System.out.println("Error: No se encontró el driver de PostgreSQL.");
+            e.printStackTrace();
         } catch (SQLException e) {
-            System.out.println("Error en la ruta de conexión");
+            System.out.println("Error: No se pudo conectar a la base de datos.");
+            e.printStackTrace();
         }
     }
 
-    public static Connection getConexion(){
-        if (conexion == null){
+    public static Connection getConexion() {
+        if (conexion == null) {
             new Conexion();
         }
         return conexion;
     }
 
-    static void cerrarConexion(){
+    public static void cerrarConexion() {
         try {
-            if (pstm != null) {
-                pstm.close();
-            }
             if (conexion != null) {
                 conexion.close();
+                System.out.println("Conexión cerrada.");
             }
-        }catch (SQLException e){
-            System.out.println("Error al cerrar la conexión");
+        } catch (SQLException e) {
+            System.out.println("Error al cerrar la conexión.");
             e.printStackTrace();
         }
     }
 
-    //======================================METODO ABCC==============================================================
-    //ALTAS
-    public static boolean AgregarAlumno(alumno a){
-        try {
-            Connection conexion = getConexion();
-            pstm = conexion.prepareStatement("INSERT INTO paciente VALUES (?,?,?,?,?,?,?,?)");
-
+    // Método para agregar un alumno
+    public static boolean AgregarAlumno(alumno a) {
+        String sql = "INSERT INTO paciente (NumeroControl, Nombre, PrimerAp, SegundoAp, Carrera, Semestre, Edad, Promedio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstm = getConexion().prepareStatement(sql)) {
             pstm.setInt(1, a.getNumeroControl());
             pstm.setString(2, a.getNombre());
-            pstm.setString(4, a.getPrimerAp());
-            pstm.setString(5, a.getsegundoAp());
-            pstm.setString(6, a.getCarrera());
-            pstm.setInt(7, a.getSemestre());
-            pstm.setInt(8, a.getEdad());
+            pstm.setString(3, a.getPrimerAp());
+            pstm.setString(4, a.getSegundorAp());
+            pstm.setString(5, a.getCarrera());
+            pstm.setInt(6, a.getSemestre());
+            pstm.setInt(7, a.getEdad());
             pstm.setDouble(8, a.getPromedio());
             pstm.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("Error en AgregarAlumno en Conexion.java");
+            System.out.println("Error en AgregarAlumno:");
             e.printStackTrace();
         }
         return false;
     }
-//==================================Bajas========================================
-    public static boolean EliminarAlumno(String instruccion){
-        try {
+
+    // Método para eliminar un alumno
+    public static boolean EliminarAlumno(String instruccion) {
+        String sql = "DELETE FROM alumno WHERE NumeroControl = ?";
+         try {
             String consulta = instruccion;
             pstm = conexion.prepareStatement(consulta);
             pstm.executeUpdate();
@@ -88,32 +88,36 @@ public class Conexion {
         }
         return false;
     }
-//====================================Cambios================================================
-    public static boolean ActualizarAlumno(alumno a){
-        try {
-            Connection conexion = getConexion();
-            pstm = conexion.prepareStatement("UPDATE alumnos SET Nombre=?,PrimerAp=?,SegundoAp=?,Carrera=?,Semestre=?,Edad=?,Promedio=? WHERE NumeroControl=" + a.getNumeroControl());
-            pstm.setDouble(1, a.getNombre());
+
+    // Método para actualizar un alumno
+    public static boolean ActualizarAlumno(alumno a) {
+        String sql = "UPDATE paciente SET Nombre = ?, PrimerAp = ?, SegundoAp = ?, Carrera = ?, Semestre = ?, Edad = ?, Promedio = ? WHERE NumeroControl = ?";
+        try (PreparedStatement pstm = getConexion().prepareStatement(sql)) {
+            pstm.setString(1, a.getNombre());
             pstm.setString(2, a.getPrimerAp());
-            pstm.setString(3, a.getSegundoAp());
+            pstm.setString(3, a.getSegundorAp());
             pstm.setString(4, a.getCarrera());
-            pstm.setString(5, a.getSemestre());
-            pstm.setString(6, a.getEdad());
-            pstm.setString(7, a.getPromedio());
+            pstm.setInt(5, a.getSemestre());
+            pstm.setInt(6, a.getEdad());
+            pstm.setDouble(7, a.getPromedio());
+            pstm.setInt(8, a.getNumeroControl());
             pstm.executeUpdate();
             return true;
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
+        } catch (SQLException e) {
+            System.out.println("Error en ActualizarAlumno:");
+            e.printStackTrace();
         }
         return false;
     }
-//==================================Consultas==================================================
-    public static ResultSet BuscarAlumno(String consulta){
+
+    // Método para buscar alumnos
+    public static ResultSet BuscarAlumno(String consulta) {
         try {
-            pstm = conexion.prepareStatement(consulta);
+            PreparedStatement pstm = getConexion().prepareStatement(consulta);
             return pstm.executeQuery();
         } catch (SQLException e) {
-            System.out.println("Error en instrucción SQL");
+            System.out.println("Error en BuscarAlumno:");
+            e.printStackTrace();
         }
         return null;
     }
