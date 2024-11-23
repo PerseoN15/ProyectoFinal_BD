@@ -96,9 +96,6 @@
           </Constraints>
         </Component>
         <Component class="javax.swing.JTextField" name="txt_usuario">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jTextField1"/>
-          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="230" y="210" width="130" height="20"/>
@@ -115,20 +112,20 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JPasswordField" name="jPasswordField1">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jPasswordField1"/>
-          </Properties>
+        <Component class="javax.swing.JPasswordField" name="txt_contrase&#xf1;a">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="230" y="260" width="130" height="20"/>
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="btn_Ingresar">
           <Properties>
             <Property name="text" type="java.lang.String" value="Ingresar"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_IngresarActionPerformed"/>
+          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="250" y="290" width="90" height="30"/>
@@ -138,7 +135,7 @@
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/vista/DALLE_~1.JPE"/>
+              <Image iconType="3" name="/images/DALL&#xb7;E_2024-11-21_16.33.50_-_A_minimalist_icon_design_featuring_the_silhouette_of_a_horse__styled_similarly_to_typical_user_profile_icons._The_horse_silhouette_is_sleek_and_modern_(2)-transformed.jpeg"/>
             </Property>
           </Properties>
           <Constraints>

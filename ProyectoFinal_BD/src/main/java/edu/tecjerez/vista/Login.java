@@ -3,18 +3,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package vista;
+import MODELO.Usuario;
+import Conexion.Conexion;
+import Controlador.UsuarioDAO;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author anemn
  */
 public class Login extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Login
-     */
+UsuarioDAO uDAO = new UsuarioDAO();
+    boolean mostrarUsuario = false;
+    public static boolean bandera;
+   
     public Login() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -32,8 +41,8 @@ public class Login extends javax.swing.JFrame {
         lbl_usuario = new javax.swing.JLabel();
         txt_usuario = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
+        txt_contraseña = new javax.swing.JPasswordField();
+        btn_Ingresar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -63,20 +72,21 @@ public class Login extends javax.swing.JFrame {
 
         lbl_usuario.setText("Usuario");
         bg.add(lbl_usuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 190, -1, -1));
-
-        txt_usuario.setText("jTextField1");
         bg.add(txt_usuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 210, 130, 20));
 
         jLabel1.setText("Contraseña");
         bg.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 240, -1, -1));
+        bg.add(txt_contraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 260, 130, 20));
 
-        jPasswordField1.setText("jPasswordField1");
-        bg.add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 260, 130, 20));
+        btn_Ingresar.setText("Ingresar");
+        btn_Ingresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_IngresarActionPerformed(evt);
+            }
+        });
+        bg.add(btn_Ingresar, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 290, 90, 30));
 
-        jButton1.setText("Ingresar");
-        bg.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 290, 90, 30));
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/DALLE_~1.JPE"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/DALL·E_2024-11-21_16.33.50_-_A_minimalist_icon_design_featuring_the_silhouette_of_a_horse__styled_similarly_to_typical_user_profile_icons._The_horse_silhouette_is_sleek_and_modern_(2)-transformed.jpeg"))); // NOI18N
         bg.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 30, 160, 160));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -93,6 +103,46 @@ public class Login extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_IngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_IngresarActionPerformed
+     Connection c = Conexion.getConexion();
+      if (verificar()) {
+        FuncionImprimirUsuario(txt_usuario.getText());
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (mostrarUsuario) {
+                    
+                    VentanaInicio ventanaInicio = new VentanaInicio();
+                    ventanaInicio.setVisible(true);
+                } else {
+                    VentanaInicio ventanaInicio = new VentanaInicio();
+                    ventanaInicio.setVisible(true);
+                }
+            }
+        });
+        setVisible(false);
+    } else {
+        JOptionPane.showMessageDialog(null, "El nombre de usuario o la contraseña son incorrectos");
+    }
+    }//GEN-LAST:event_btn_IngresarActionPerformed
+public boolean verificar(){
+    try{ ArrayList<Usuario> listaUsuario uDAO.buscarUsuario ("SELECT * FROM usuarios WHERE usuario = '"+txt_usuario.getText()+"'");
+      
+    if (listaUsuario.size()!=0 && bandera) {
+                Usuario usuario = listaUsuarios.get(0);
+                return usuario.getContraseña().equals(txt_contrasena.getText());
+        } else {
+               return false;
+        }
+
+        } catch (InterruptedException | NullPointerException e) {
+            e.printStackTrace();
+        }
+    return true;
+    
+}
+    
 
     /**
      * @param args the command line arguments
@@ -131,13 +181,13 @@ public class Login extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bg;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btn_Ingresar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JLabel lbl_iniciarSesion;
     private javax.swing.JLabel lbl_usuario;
+    private javax.swing.JPasswordField txt_contraseña;
     private javax.swing.JTextField txt_usuario;
     // End of variables declaration//GEN-END:variables
 }
