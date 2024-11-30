@@ -24,8 +24,8 @@ public class Conexion {
         // Busca el driver y establece la conexión
         try {
             Class.forName("org.postgresql.Driver");
-            String URL = "jdbc:postgresql://localhost:5432/proyecto_Tutorias";
-            conexion = DriverManager.getConnection(URL, "root", "pass123");
+            String URL = "jdbc:postgresql://localhost:5432/proyecto_tutorias";
+            conexion = DriverManager.getConnection(URL, "postgres", "itsj");
         } catch (ClassNotFoundException e) {
             System.out.println("Error: No se encontró el driver de PostgreSQL.");
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class Conexion {
 
     // Método para agregar un alumno
     public static boolean AgregarAlumno(alumno a) {
-        String sql = "INSERT INTO paciente (NumeroControl, Nombre, PrimerAp, SegundoAp, Carrera, Semestre, Edad, Promedio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO alumno (NumeroControl, Nombre, PrimerAp, SegundoAp, Carrera, Semestre, Edad, Promedio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstm = getConexion().prepareStatement(sql)) {
             pstm.setInt(1, a.getNumeroControl());
             pstm.setString(2, a.getNombre());
@@ -91,7 +91,7 @@ public class Conexion {
 
     // Método para actualizar un alumno
     public static boolean ActualizarAlumno(alumno a) {
-        String sql = "UPDATE paciente SET Nombre = ?, PrimerAp = ?, SegundoAp = ?, Carrera = ?, Semestre = ?, Edad = ?, Promedio = ? WHERE NumeroControl = ?";
+        String sql = "UPDATE alumno SET Nombre = ?, PrimerAp = ?, SegundoAp = ?, Carrera = ?, Semestre = ?, Edad = ?, Promedio = ? WHERE NumeroControl = ?";
         try (PreparedStatement pstm = getConexion().prepareStatement(sql)) {
             pstm.setString(1, a.getNombre());
             pstm.setString(2, a.getPrimerAp());
@@ -123,6 +123,13 @@ public class Conexion {
     }
 
     public static void main(String[] args) {
-        new Conexion();
+    Connection conexion = Conexion.getConexion();
+   /* if (conexion != null) {
+        System.out.println("Conexion exitosa");
+    } else {
+        System.out.println("No se pudo conectar a la base de datos.");
     }
+   */ 
+}
+
 }//class
