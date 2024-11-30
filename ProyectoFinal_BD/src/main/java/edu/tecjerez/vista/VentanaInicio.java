@@ -515,8 +515,13 @@ try {
         btn_altas.setVisible(true);
         btn_cambios.setVisible(false);
         actualizarTablas(jTable1);
-        //Estado_Cuenta.setVisible(false);
-        //Caja_Estado_Cuenta.setVisible(false);
+        txt_promedio.setVisible(true);
+        txt_nombre.setVisible(true);
+        txt_primerap.setVisible(true);
+        txt_segundoAp.setVisible(true);
+        JCB_Carrera.setVisible(true);
+        JCB_Semestre.setVisible(true);
+        txt_edad.setVisible(true);
         metodoMagicoParaRestablecerComponentes(txt_numcontrol,
                 txt_promedio,
                 txt_nombre,
@@ -544,9 +549,16 @@ try {
         btn_bajas.setVisible(true);
         btn_altas.setVisible(false);
         btn_cambios.setVisible(false);
-        //actualizarTablas(jTable1);
-        //Estado_Cuenta.setVisible(true);
-        //Caja_Estado_Cuenta.setVisible(true);
+        txt_promedio.setVisible(false);
+        txt_nombre.setVisible(false);
+        txt_primerap.setVisible(false);
+        txt_segundoAp.setVisible(false);
+        JCB_Carrera.setVisible(false);
+        JCB_Semestre.setVisible(false);
+        txt_edad.setVisible(false);
+        
+        
+        actualizarTablas(jTable1);
        metodoMagicoParaRestablecerComponentes(txt_numcontrol,
                 txt_promedio,
                 txt_nombre,
@@ -570,9 +582,14 @@ try {
         btn_bajas.setVisible(false);
         btn_altas.setVisible(false);
         btn_cambios.setVisible(true);
-        //actualizarTablas(jTable1);
-        //Estado_Cuenta.setVisible(true);
-        //Caja_Estado_Cuenta.setVisible(true);
+        actualizarTablas(jTable1);
+        txt_promedio.setVisible(true);
+        txt_nombre.setVisible(true);
+        txt_primerap.setVisible(true);
+        txt_segundoAp.setVisible(true);
+        JCB_Carrera.setVisible(true);
+        JCB_Semestre.setVisible(true);
+        txt_edad.setVisible(true);
         metodoMagicoParaRestablecerComponentes(txt_numcontrol,
                 txt_promedio,
                 txt_nombre,
