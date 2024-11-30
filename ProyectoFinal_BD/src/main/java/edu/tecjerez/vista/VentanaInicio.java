@@ -4,15 +4,33 @@
  */
 package vista;
 
+import Controlador.AlumnoDAO;
+import MODELO.alumno;
+import java.awt.Component;
+import java.sql.SQLException;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+
 /**
  *
  * @author anemn
  */
 public class VentanaInicio extends javax.swing.JFrame {
 
-    /**
-     * Creates new form VentanaInicio
-     */
+    AlumnoDAO p1DAO = new AlumnoDAO();
+    alumno a1;
+    int cont;
+   // Fachada f1 = new Fachada();
+    //private Memento ultimomemento;
+    
+    
     public VentanaInicio() {
         initComponents();
     }
@@ -49,16 +67,16 @@ public class VentanaInicio extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         txt_primerap = new javax.swing.JTextPane();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        txt_segundoAp = new javax.swing.JTextPane();
+        JCB_Carrera = new javax.swing.JComboBox<>();
         lbl_semestre = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        JCB_Semestre = new javax.swing.JComboBox<>();
         lbl_Edad = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
         txt_edad = new javax.swing.JTextPane();
-        jLabel1 = new javax.swing.JLabel();
+        lbl_promedio = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        jTextPane2 = new javax.swing.JTextPane();
+        txt_promedio = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         JM_Alumnos = new javax.swing.JMenu();
         JM_Altas = new javax.swing.JMenuItem();
@@ -70,7 +88,7 @@ public class VentanaInicio extends javax.swing.JFrame {
         Grafico = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        JM_Funcion = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -94,6 +112,11 @@ public class VentanaInicio extends javax.swing.JFrame {
         btn_bajas.setBackground(new java.awt.Color(255, 51, 51));
         btn_bajas.setText("Dar de Baja");
         btn_bajas.setPreferredSize(new java.awt.Dimension(115, 40));
+        btn_bajas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_bajasActionPerformed(evt);
+            }
+        });
 
         btn_cambios.setBackground(new java.awt.Color(204, 204, 0));
         btn_cambios.setText("Cambiar");
@@ -145,6 +168,12 @@ public class VentanaInicio extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jScrollPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jScrollPane1MouseReleased(evt);
+            }
+        });
+
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null},
@@ -161,6 +190,11 @@ public class VentanaInicio extends javax.swing.JFrame {
         lbl_numControl.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         lbl_numControl.setText("Numero de Control");
 
+        txt_numcontrol.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_numcontrolKeyReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(txt_numcontrol);
 
         lbl_nombre.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
@@ -175,33 +209,56 @@ public class VentanaInicio extends javax.swing.JFrame {
         lbl_carrera.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         lbl_carrera.setText("Carrera");
 
+        txt_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_nombreKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_nombreKeyTyped(evt);
+            }
+        });
         jScrollPane3.setViewportView(txt_nombre);
 
+        txt_primerap.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_primerapKeyTyped(evt);
+            }
+        });
         jScrollPane4.setViewportView(txt_primerap);
 
-        jScrollPane5.setViewportView(jTextPane1);
+        txt_segundoAp.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_segundoApKeyTyped(evt);
+            }
+        });
+        jScrollPane5.setViewportView(txt_segundoAp);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ISC", "IM", "IAA", "LA", "LCP" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        JCB_Carrera.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ISC", "IM", "IAA", "LA", "LCP" }));
+        JCB_Carrera.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                JCB_CarreraActionPerformed(evt);
             }
         });
 
         lbl_semestre.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         lbl_semestre.setText("Semestre");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1°", "2°", "3°", "4°", "5°", "6°", "7°", "8°", "9°" }));
+        JCB_Semestre.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1°", "2°", "3°", "4°", "5°", "6°", "7°", "8°", "9°" }));
 
         lbl_Edad.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         lbl_Edad.setText("Edad");
 
+        txt_edad.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_edadKeyTyped(evt);
+            }
+        });
         jScrollPane6.setViewportView(txt_edad);
 
-        jLabel1.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        jLabel1.setText("Promedio");
+        lbl_promedio.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        lbl_promedio.setText("Promedio");
 
-        jScrollPane7.setViewportView(jTextPane2);
+        jScrollPane7.setViewportView(txt_promedio);
 
         javax.swing.GroupLayout ABCCLayout = new javax.swing.GroupLayout(ABCC.getContentPane());
         ABCC.getContentPane().setLayout(ABCCLayout);
@@ -227,7 +284,7 @@ public class VentanaInicio extends javax.swing.JFrame {
                     .addGroup(ABCCLayout.createSequentialGroup()
                         .addGroup(ABCCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(ABCCLayout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lbl_promedio, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ABCCLayout.createSequentialGroup()
                                 .addComponent(lbl_Edad)
@@ -241,8 +298,8 @@ public class VentanaInicio extends javax.swing.JFrame {
                             .addComponent(lbl_semestre))
                         .addGap(30, 30, 30)
                         .addGroup(ABCCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(JCB_Semestre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JCB_Carrera, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ABCCLayout.setVerticalGroup(
@@ -255,14 +312,14 @@ public class VentanaInicio extends javax.swing.JFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(ABCCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lbl_carrera)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(JCB_Carrera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(ABCCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbl_nombre)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(ABCCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lbl_semestre)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(JCB_Semestre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(ABCCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane4)
@@ -279,7 +336,7 @@ public class VentanaInicio extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(ABCCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))))
+                            .addComponent(lbl_promedio))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -331,8 +388,13 @@ public class VentanaInicio extends javax.swing.JFrame {
         jMenuItem3.setText("Vista con JOINS");
         jMenu1.add(jMenuItem3);
 
-        jMenuItem4.setText("Function");
-        jMenu1.add(jMenuItem4);
+        JM_Funcion.setText("Function");
+        JM_Funcion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JM_FuncionActionPerformed(evt);
+            }
+        });
+        jMenu1.add(JM_Funcion);
 
         jMenuBar1.add(jMenu1);
 
@@ -353,12 +415,24 @@ public class VentanaInicio extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void JCB_CarreraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JCB_CarreraActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_JCB_CarreraActionPerformed
 
     private void btn_cambiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cambiosActionPerformed
+
+if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt_primerap.getText().equals("") 
+        ||txt_segundoAp.getText().equals("") || txt_edad.getText().equals("")|| txt_promedio.getText().equals("") ){
+            JOptionPane.showMessageDialog(null, "VERIFICA QUE LOS CAMPOS ESTEN COMPLETOS");
+        }else{
+            p1= new alumno(Integer.parseInt(Caja_ID.getText()), Double.parseDouble(Caja_Estado_Cuenta.getText()) , Caja_Nombre_Paciente.getText(), Caja_ApellidoP.getText(), Caja_Domicilio.getSelectedItem().toString(), Caja_telefono.getText(), Tipo_Seguro.getSelectedItem().toString(), ComboSala.getSelectedItem().toString());
         
+        f1.FachadaActualizarPacientes(p1);
+        JOptionPane.showMessageDialog(null, "El paciente se ah actualizado correctamente");
+        actualizarTablas(jTable1);
+        metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
+        Boton_Memento.setEnabled(true);
+        }        
           
     }//GEN-LAST:event_btn_cambiosActionPerformed
 
@@ -404,7 +478,7 @@ public class VentanaInicio extends javax.swing.JFrame {
 
     private void JM_CambiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JM_CambiosActionPerformed
         Grafico.setEnabled(true);
-        //FrameConsultas.setVisible(false);
+        //FrameConsultas.setVisible(txt);
         ABCC.setVisible(true);
         Fondo.setBounds(0, 0, 710, 80);
         Fondo.setBackground(new java.awt.Color(161, 215, 225));
@@ -422,6 +496,121 @@ public class VentanaInicio extends javax.swing.JFrame {
         
         
     }//GEN-LAST:event_JM_CambiosActionPerformed
+
+    private void txt_nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_nombreKeyTyped
+        char car= evt.getKeyChar();
+            if(!(car>64&&car<91||car>96&&car<123||car==32)) {
+                evt.consume();
+        
+            }
+    }//GEN-LAST:event_txt_nombreKeyTyped
+
+    
+    private void txt_primerapKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_primerapKeyTyped
+        
+        char car= evt.getKeyChar();
+            if(!(car>64&&car<91||car>96&&car<123||car==32)) {
+                evt.consume();
+        
+            }
+        
+    }//GEN-LAST:event_txt_primerapKeyTyped
+
+    private void txt_segundoApKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_segundoApKeyTyped
+        
+        char car= evt.getKeyChar();
+            if(!(car>64&&car<91||car>96&&car<123||car==32)) {
+                evt.consume();
+        
+            }
+        
+    }//GEN-LAST:event_txt_segundoApKeyTyped
+
+    private void txt_edadKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_edadKeyTyped
+        
+        char caracter=evt.getKeyChar();
+            if(!(caracter>47&&caracter<58)) {
+                evt.consume();
+            }
+             if (txt_edad.getText().trim().length() == 2) {
+        evt.consume();
+            }
+        
+    }//GEN-LAST:event_txt_edadKeyTyped
+
+    private void JM_FuncionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JM_FuncionActionPerformed
+        
+       /* 
+        String valor = JOptionPane.showInputDialog("Ingresa la ciudad").toUpperCase();
+        if(valor==null || valor.trim().isEmpty()|| f1.FachadaObtenerPacienteRegion(valor)== null){
+            JOptionPane.showMessageDialog(null, "Error, no hay clinicas en esa ciudad");
+            
+        }else{
+            try {
+                JOptionPane.showMessageDialog(null, f1.FachadaObtenerPacienteRegion(valor)); 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+           
+        }
+      */  
+    }//GEN-LAST:event_JM_FuncionActionPerformed
+
+    private void btn_bajasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_bajasActionPerformed
+        
+       /* if (p1DAO.buscarPaciente("").isEmpty()){
+            JOptionPane.showMessageDialog(null, "No cuenta con Pacientes actualmente");
+            metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
+        }if(Caja_ID.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "Ups!!... El paciente no existe");
+            metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
+            actualizarTablas(jTable1);
+        }else{
+            paciente estadoAnterior = new paciente(Integer.parseInt(Caja_ID.getText()), Double.parseDouble(Caja_Estado_Cuenta.getText()) , Caja_Nombre_Paciente.getText(), Caja_ApellidoP.getText(), Caja_Domicilio.getSelectedItem().toString(), Caja_telefono.getText(), Tipo_Seguro.getSelectedItem().toString(), ComboSala.getSelectedItem().toString());
+                ultimomemento = new Memento(estadoAnterior);
+           //p1DAO.eliminarPaciente(Caja_ID.getText());
+           f1.FachadaEliminarPaciente(Caja_ID.getText());
+           JOptionPane.showMessageDialog(null, "Paciente eliminado correctamente!!");
+            actualizarTablas(jTable1);
+            metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
+            Boton_Memento.setEnabled(true);
+        }
+        
+       */ 
+        
+        
+    }//GEN-LAST:event_btn_bajasActionPerformed
+
+    private void txt_numcontrolKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_numcontrolKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_numcontrolKeyReleased
+
+    private void txt_nombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_nombreKeyReleased
+        if(lbl_titulo.getText().equals("BAJAS")||lbl_titulo.getText().equals("CAMBIOS")){
+                BusquedaFiltro(jTable1, "Nombre", txt_nombre.getText());
+            }        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_nombreKeyReleased
+
+    private void jScrollPane1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane1MouseReleased
+         if(lbl_titulo.getText().equals("ALTAS")){
+            
+        }else{
+            
+            txt_nombre.setText(String.valueOf( jTable1.getValueAt(jTable1.getSelectedRow(),2)));
+            txt_numcontrol.setText(String.valueOf( jTable1.getValueAt(jTable1.getSelectedRow(),0)));
+            txt_primerap.setText(String.valueOf( jTable1.getValueAt(jTable1.getSelectedRow(),3)));
+            txt_segundoAp.setText(String.valueOf( jTable1.getValueAt(jTable1.getSelectedRow(),4)));
+            JCB_Carrera.setSelectedItem(String.valueOf( jTable1.getValueAt(jTable1.getSelectedRow(),5)));
+            JCB_Semestre.setSelectedItem(jTable1.getValueAt(jTable1.getSelectedRow(),6));
+            txt_edad.setText(String.valueOf( jTable1.getValueAt(jTable1.getSelectedRow(),7)));
+            txt_promedio.setText(String.valueOf( jTable1.getValueAt(jTable1.getSelectedRow(),1)));
+            
+            alumno estadoAnterior = new alumno(Integer.parseInt(txt_numcontrol.getText()), Double.parseDouble(txt_promedio.getText()) , txt_nombre.getText(),
+                    txt_primerap.getText(), txt_segundoAp.getText().toString(), JCB_Carrera.getSelectedItem(), JCB_Semestre.getSelectedItem().toString(), txt_edad.toString());
+           // ultimomemento = new Memento(estadoAnterior);
+             
+        }
+    }//GEN-LAST:event_jScrollPane1MouseReleased
 
     /**
      * @param args the command line arguments
@@ -456,7 +645,62 @@ public class VentanaInicio extends javax.swing.JFrame {
                 new VentanaInicio().setVisible(true);
             }
         });
+    }//main
+    
+    public void metodoHabilitar(Component...componentes){
+        for(Component x: componentes){
+            if(x instanceof JTextField){
+                ((JTextField)x).setEditable(true);
+            } else if (x instanceof JButton) {
+                ((JButton)x).setEnabled(true);
+            }
+        }//foreach
+
+    }// Metodo Habilitar
+    public void metodoDeshabilitar(Component...componentes){
+        for(Component x: componentes){
+            if(x instanceof JTextField){
+                ((JTextField)x).setEditable(false);
+            } else if (x instanceof JButton) {
+                ((JButton)x).setEnabled(false);
+            }
+        }//foreach
+    }// Metodo Desabilitar
+    
+    public void BusquedaFiltro(JTable tabla, String campo, String filtro){
+      /*  try{
+            
+                String controlador="org.postgresql.Driver";
+                String URL = "jdbc:postgresql://localhost:5432/proyecto_clinica";
+                 String consulta = "SELECT * FROM paciente WHERE " + campo.toLowerCase() + "::text LIKE '" + filtro + "%' ORDER BY Idpaciente";
+        
+                ResultSetTableModel modeloTabla=null;
+                try {
+                    modeloTabla = new ResultSetTableModel(controlador,URL,consulta);
+                    }  catch (ClassNotFoundException e) {
+                         JOptionPane.showMessageDialog(getContentPane(), e);
+                        }
+                tabla.setModel(modeloTabla);
+            }
+              catch (SQLException e) {
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }*/
     }
+    public void metodoMagicoParaRestablecerComponentes(JComponent ... compo){
+        for (JComponent x: compo) {
+            if(x instanceof JTextField){
+                ((JTextField)x).setText("");
+            }else if(x instanceof JComboBox){
+                ((JComboBox)x).setSelectedIndex(0);
+            }else if(x instanceof SpinnerModel){
+                ((SpinnerModel)x).setValue(0);
+            } else if (x instanceof JCheckBox) {
+                ((JCheckBox)x).setSelected(false);
+            }else if(x instanceof JRadioButton){
+                ((JRadioButton)x).setSelected(false);
+            }
+        }
+    }//metodoParaVaciado
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JInternalFrame ABCC;
@@ -464,23 +708,22 @@ public class VentanaInicio extends javax.swing.JFrame {
     private javax.swing.JButton Boton_Memento;
     private javax.swing.JPanel Fondo;
     private javax.swing.JMenuItem Grafico;
+    private javax.swing.JComboBox<String> JCB_Carrera;
+    private javax.swing.JComboBox<String> JCB_Semestre;
     private javax.swing.JMenuItem JM_Altas;
     private javax.swing.JMenu JM_Alumnos;
     private javax.swing.JMenuItem JM_Bajas;
     private javax.swing.JMenuItem JM_Cambios;
     private javax.swing.JMenuItem JM_Consultas;
+    private javax.swing.JMenuItem JM_Funcion;
     private javax.swing.JButton btn_altas;
     private javax.swing.JButton btn_bajas;
     private javax.swing.JButton btn_cambios;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -489,14 +732,13 @@ public class VentanaInicio extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextPane jTextPane1;
-    private javax.swing.JTextPane jTextPane2;
     private javax.swing.JLabel lbl_Edad;
     private javax.swing.JLabel lbl_carrera;
     private javax.swing.JLabel lbl_img;
     private javax.swing.JLabel lbl_nombre;
     private javax.swing.JLabel lbl_numControl;
     private javax.swing.JLabel lbl_primerap;
+    private javax.swing.JLabel lbl_promedio;
     private javax.swing.JLabel lbl_segundoap;
     private javax.swing.JLabel lbl_semestre;
     private javax.swing.JLabel lbl_titulo;
@@ -504,5 +746,7 @@ public class VentanaInicio extends javax.swing.JFrame {
     private javax.swing.JTextPane txt_nombre;
     private javax.swing.JTextPane txt_numcontrol;
     private javax.swing.JTextPane txt_primerap;
+    private javax.swing.JTextPane txt_promedio;
+    private javax.swing.JTextPane txt_segundoAp;
     // End of variables declaration//GEN-END:variables
 }
