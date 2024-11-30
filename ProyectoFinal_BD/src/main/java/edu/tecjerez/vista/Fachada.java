@@ -52,16 +52,16 @@ public class Fachada {
         Connection conexion = getConexion();
         try {
             conexion.setAutoCommit(false);
-            pstm = conexion.prepareStatement("INSERT INTO paciente VALUES (?,?,?,?,?,?,?,?)");
+            pstm = conexion.prepareStatement("UPDATE alumno SET Nombre = ?, PrimerAp = ?, SegundoAp = ?, Carrera = ?, Semestre = ?, Edad = ?, Promedio = ? WHERE NumeroControl = ?");
+pstm.setString(1, alum.getNombre());
+pstm.setString(2, alum.getPrimerAp());
+pstm.setString(3, alum.getSegundorAp());
+pstm.setString(4, alum.getCarrera());
+pstm.setInt(5, alum.getSemestre());
+pstm.setInt(6, alum.getEdad());
+pstm.setDouble(7, alum.getPromedio());
+pstm.setInt(8, alum.getNumeroControl());
 
-            pstm.setInt(1, alum.getNumeroControl());
-            pstm.setString(2, alum.getNombre());
-            pstm.setString(3, alum.getPrimerAp());
-            pstm.setString(4, alum.getSegundorAp());
-            pstm.setString(5, alum.getCarrera());
-            pstm.setInt(6, alum.getSemestre());
-            pstm.setInt(7, alum.getEdad());
-            pstm.setDouble(8, alum.getPromedio());
             pstm.executeUpdate();
             
             conexion.commit();
@@ -90,46 +90,75 @@ public class Fachada {
     }// metodo FachadaAgregarAlumno
         //====================================================================================================================
 
-    public static boolean FachadaAgregarAlumnos(alumno alum){
-        Connection conexion = getConexion();
-        try {
-            conexion.setAutoCommit(false);
-            pstm = conexion.prepareStatement("INSERT INTO alumno VALUES (?,?,?,?,?,?,?,?)");
+    public static boolean FachadaAgregarAlumnos(alumno alum) {
+    Connection conexion = getConexion();
+    try {
+        conexion.setAutoCommit(false);
 
-            pstm.setInt(1, alum.getNumeroControl());
-            pstm.setString(2, alum.getNombre());
-            pstm.setString(3, alum.getPrimerAp());
-            pstm.setString(4, alum.getSegundorAp());
-            pstm.setString(5, alum.getCarrera());
-            pstm.setInt(6, alum.getSemestre());
-            pstm.setInt(7, alum.getEdad());
-            pstm.setDouble(8, alum.getPromedio());
-            pstm.executeUpdate();
-            
-            conexion.commit();
-            return true;        
+        // Verificar si ya existe el alumno
+        String checkQuery = "SELECT COUNT(*) FROM alumno WHERE NumeroControl = ?";
+        try (PreparedStatement checkStmt = conexion.prepareStatement(checkQuery)) {
+            checkStmt.setInt(1, alum.getNumeroControl());
+            ResultSet rs = checkStmt.executeQuery();
+            rs.next();
+            int count = rs.getInt(1);
+
+            if (count > 0) {
+                // Si el alumno ya existe, ejecuta un UPDATE
+                String updateQuery = "UPDATE alumno SET Nombre = ?, PrimerAp = ?, SegundoAp = ?, Carrera = ?, Semestre = ?, Edad = ?, Promedio = ? WHERE NumeroControl = ?";
+                try (PreparedStatement updateStmt = conexion.prepareStatement(updateQuery)) {
+                    updateStmt.setString(1, alum.getNombre());
+                    updateStmt.setString(2, alum.getPrimerAp());
+                    updateStmt.setString(3, alum.getSegundorAp());
+                    updateStmt.setString(4, alum.getCarrera());
+                    updateStmt.setInt(5, alum.getSemestre());
+                    updateStmt.setInt(6, alum.getEdad());
+                    updateStmt.setDouble(7, alum.getPromedio());
+                    updateStmt.setInt(8, alum.getNumeroControl());
+                    updateStmt.executeUpdate();
+                }
+            } else {
+                // Si el alumno no existe, ejecuta un INSERT
+                String insertQuery = "INSERT INTO alumno (NumeroControl, Nombre, PrimerAp, SegundoAp, Carrera, Semestre, Edad, Promedio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement insertStmt = conexion.prepareStatement(insertQuery)) {
+                    insertStmt.setInt(1, alum.getNumeroControl());
+                    insertStmt.setString(2, alum.getNombre());
+                    insertStmt.setString(3, alum.getPrimerAp());
+                    insertStmt.setString(4, alum.getSegundorAp());
+                    insertStmt.setString(5, alum.getCarrera());
+                    insertStmt.setInt(6, alum.getSemestre());
+                    insertStmt.setInt(7, alum.getEdad());
+                    insertStmt.setDouble(8, alum.getPromedio());
+                    insertStmt.executeUpdate();
+                }
+            }
+        }
+
+        conexion.commit();
+        return true;
+    } catch (SQLException e) {
+        System.out.println("Error en FachadaAgregarAlumnos en archivo Fachada.java");
+        e.printStackTrace();
+        try {
+            conexion.rollback();
+        } catch (SQLException ex) {
+            System.out.println("Error al hacer el rollback");
+            ex.printStackTrace();
+        }
+    } finally {
+        try {
+            conexion.setAutoCommit(true);
+            if (pstm != null) {
+                pstm.close();
+            }
         } catch (SQLException e) {
-            System.out.println("Error en AgregarAlumno en archivo Fachada.java");
             e.printStackTrace();
-            
-            try {
-                conexion.rollback();
-            } catch (SQLException a) {
-                System.out.println("Error al hacer el rollback");
-                a.printStackTrace();
-            }
-        } finally{
-            try {
-                conexion.setAutoCommit(true);
-                if(pstm !=null){
-                    pstm.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-                }
-        return false;
+        }
     }
+    return false;
+}
+
+
         //====================================================================================================================
 
   
@@ -205,7 +234,7 @@ public class Fachada {
         
         try {
             conexion.setAutoCommit(false); //CON ESTO INICIA LA TRANSACCION 
-            pstm = conexion.prepareStatement("UPDATE alumno SET Estado_Cuenta_Paciente=?,Nombre=?,Apellido=?,Direccion=?,Num_Telefono=?,Seguro_Medico=?,Ubicacion=? WHERE IdPaciente=" + alum.getNumeroControl());
+            pstm = conexion.prepareStatement("UPDATE alumno SET Nombre = ?, PrimerAp = ?, SegundoAp = ?, Carrera = ?, Semestre = ?, Edad = ?, Promedio = ? WHERE NumeroControl = ?");
             pstm.setString(1, alum.getNombre());
             pstm.setString(2, alum.getPrimerAp());
             pstm.setString(3, alum.getSegundorAp());
@@ -213,6 +242,8 @@ public class Fachada {
             pstm.setInt(5, alum.getSemestre());
             pstm.setInt(6, alum.getEdad());
             pstm.setDouble(7, alum.getPromedio());
+            pstm.setInt(8, alum.getNumeroControl());
+
             pstm.executeUpdate();
             
             conexion.commit(); // AQUI SE GENERA EL COMMIT
@@ -244,11 +275,11 @@ public class Fachada {
   
    /* public static void generarInforme(JFrame parentFrame) {
         try {
-           String reportPath = "C:\\Users\\Alfredo\\JaspersoftWorkspace\\MyReports\\REPORTE_PACIENTE.jasper";
+           String reportPath = "C:\\Users\\JaspersoftWorkspace\\MyReports\\REPORTE_PACIENTE.jasper";
 
             JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(reportPath);
 
-            String url = "jdbc:postgresql://localhost:5432/proyecto_clinica";
+            String url = "jdbc:postgresql://localhost:5432/";
             String user = "root";
             String password = "itsj";
             Connection connection = DriverManager.getConnection(url, user, password);
@@ -285,53 +316,67 @@ public class Fachada {
     }*/
         //====================================================================================================================
 
-    public String FachadaObtenerAlumnoCarrera(String Ciudad) {
-        Connection conexion = getConexion();
-        String informacionPaciente = "";
+   public String FachadaObtenerAlumnoCarrera(String carrera) {
+    Connection conexion = getConexion();
+    String informacionAlumnos = "";
 
-        try {
-            pstm = conexion.prepareStatement("SELECT  * FROM obtener_pacientes_por_ciudad(?) AS Pacientes_Region");
-            pstm.setString(1, Ciudad);
-            ResultSet rs = pstm.executeQuery();
-            informacionPaciente +=" NOMBRE  "+"  APELLIDO  " +" SALA  " +"                    CIUDAD" + "\n";
-            while (rs.next()) {
-            
-            String nombre = rs.getString("nombre");  // Obtiene nombre de la columna
-            String apellido = rs.getString("apellido");  // Obtiene apellido de la columna
-            String ubicacion = rs.getString("ubicacion");  // Obtiene ubicacion de la columna
-            String direccion = rs.getString("direccion");  // Obtiene direccion de la columna
+    try {
+        // Consulta para la función almacenada
+        String sql = "SELECT * FROM obtener_alumnos_por_carrera(?)";
+        PreparedStatement pstm = conexion.prepareStatement(sql);
+        pstm.setString(1, carrera);
 
-            informacionPaciente += "- "+nombre + "   " + apellido + "         " + ubicacion + "    " + direccion + "\n";
+        // Ejecutar la consulta
+        ResultSet rs = pstm.executeQuery();
+        informacionAlumnos += "NOMBRE   |   APELLIDO   |   SEMESTRE   |   PROMEDIO\n";
+        while (rs.next()) {
+            String nombre = rs.getString("nombre");
+            String apellido = rs.getString("apellido");
+            int semestre = rs.getInt("semestre");
+            double promedio = rs.getDouble("promedio");
+
+            informacionAlumnos += "- " + nombre + "   " + apellido + "         " + semestre + "          " + promedio + "\n";
         }
-        } catch (SQLException e) {
-            System.out.println("Error al llamar a la función obtener_pacientes_por_ciudad");
-            e.printStackTrace();
-        } 
-        return informacionPaciente;
+    } catch (SQLException e) {
+        System.out.println("Error al llamar a la función obtener_alumnos_por_carrera");
+        e.printStackTrace();
     }
-    
-    
-        //====================================================================================================================
+    return informacionAlumnos;
+}
 
-    public static void FuncionImprimirUsuario(String usuario) {
-        Connection c = Conexion.getConexion();
-        String MensajeUsuario ="";
-            String call = "{ call ImprimirUsuario(?) }";
-            
-            try (CallableStatement cs = c.prepareCall(call)) {
-                cs.setString(1, usuario);
-                
-                cs.execute();
-                
-               SQLWarning warning = cs.getWarnings();
-                while (warning != null) {
-                    MensajeUsuario += warning.getMessage() + "\n";
-                    warning = warning.getNextWarning();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-            JOptionPane.showMessageDialog(null, MensajeUsuario);
+
+    
+    public static void main(String[] args) {
+    Connection conexion = Conexion.getConexion();
+    if (conexion != null) {
+        System.out.println("¡Conexión exitosa!");
+    } else {
+        System.out.println("No se pudo conectar a la base de datos.");
     }
 }
+
+        //====================================================================================================================
+
+   public static void FuncionImprimirUsuario(String usuario) {
+    Connection c = Conexion.getConexion();
+    String mensajeUsuario = "";
+
+    try (PreparedStatement ps = c.prepareStatement("SELECT imprimirusuario(?)")) {
+        ps.setString(1, usuario);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            mensajeUsuario = rs.getString(1); // Captura el resultado de la función
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    JOptionPane.showMessageDialog(null, mensajeUsuario);
+}
+
+
+
+}
+
 

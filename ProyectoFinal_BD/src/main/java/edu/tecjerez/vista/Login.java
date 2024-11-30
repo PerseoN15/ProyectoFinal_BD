@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import static vista.Fachada.FuncionImprimirUsuario;
 
 /**
  *
@@ -126,12 +127,20 @@ UsuarioDAO uDAO = new UsuarioDAO();
         JOptionPane.showMessageDialog(null, "El nombre de usuario o la contraseña son incorrectos");
     }
     }//GEN-LAST:event_btn_IngresarActionPerformed
-public boolean verificar(){
-    try{ ArrayList<Usuario> listaUsuario uDAO.buscarUsuario ("SELECT * FROM usuarios WHERE usuario = '"+txt_usuario.getText()+"'");
-      
-    if (listaUsuario.size()!=0 && bandera) {
+        public boolean verificar() {
+        try {
+            ArrayList<Usuario> listaUsuarios = uDAO.buscarUsuario("SELECT * FROM usuarios WHERE usuario = '"+txt_usuario.getText()+"'");
+           uDAO.setFiltro("SELECT * FROM usuarios WHERE usuario = '"+txt_usuario.getText()+"'");
+
+          Thread hilo = new Thread(uDAO);
+          hilo.start();
+        
+        // Esperar a que el hilo termine antes de continuar
+         hilo.join();
+
+         if (listaUsuarios.size()!=0 && bandera) {
                 Usuario usuario = listaUsuarios.get(0);
-                return usuario.getContraseña().equals(txt_contrasena.getText());
+                return usuario.getContraseña().equals(txt_usuario.getText());
         } else {
                return false;
         }
@@ -139,9 +148,9 @@ public boolean verificar(){
         } catch (InterruptedException | NullPointerException e) {
             e.printStackTrace();
         }
-    return true;
-    
-}
+
+     return true;
+    }
     
 
     /**

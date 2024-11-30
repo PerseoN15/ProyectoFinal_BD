@@ -5,6 +5,7 @@
 package vista;
 
 import Controlador.AlumnoDAO;
+import MODELO.Memento;
 import MODELO.alumno;
 import java.awt.Component;
 import java.sql.SQLException;
@@ -24,11 +25,11 @@ import javax.swing.SpinnerModel;
  */
 public class VentanaInicio extends javax.swing.JFrame {
 
-    AlumnoDAO p1DAO = new AlumnoDAO();
+    AlumnoDAO a1DAO = new AlumnoDAO();
     alumno a1;
     int cont;
-   // Fachada f1 = new Fachada();
-    //private Memento ultimomemento;
+    Fachada f1 = new Fachada();
+    private Memento ultimomemento;
     
     
     public VentanaInicio() {
@@ -108,6 +109,11 @@ public class VentanaInicio extends javax.swing.JFrame {
 
         btn_altas.setBackground(new java.awt.Color(153, 255, 153));
         btn_altas.setText("Dar de Alta");
+        btn_altas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_altasActionPerformed(evt);
+            }
+        });
 
         btn_bajas.setBackground(new java.awt.Color(255, 51, 51));
         btn_bajas.setText("Dar de Baja");
@@ -233,7 +239,7 @@ public class VentanaInicio extends javax.swing.JFrame {
         });
         jScrollPane5.setViewportView(txt_segundoAp);
 
-        JCB_Carrera.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ISC", "IM", "IAA", "LA", "LCP" }));
+        JCB_Carrera.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleciona", "ISC", "IM", "IAA", "LA", "LCP" }));
         JCB_Carrera.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JCB_CarreraActionPerformed(evt);
@@ -243,7 +249,7 @@ public class VentanaInicio extends javax.swing.JFrame {
         lbl_semestre.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         lbl_semestre.setText("Semestre");
 
-        JCB_Semestre.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1°", "2°", "3°", "4°", "5°", "6°", "7°", "8°", "9°" }));
+        JCB_Semestre.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleciona", "1", "2", "3", "4", "5", "6", "7", "8", "9" }));
 
         lbl_Edad.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         lbl_Edad.setText("Edad");
@@ -337,11 +343,11 @@ public class VentanaInicio extends javax.swing.JFrame {
                         .addGroup(ABCCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_promedio))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        BG.add(ABCC, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 750, 550));
+        BG.add(ABCC, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 750, 550));
 
         JM_Alumnos.setText("Alumnos");
 
@@ -422,15 +428,31 @@ public class VentanaInicio extends javax.swing.JFrame {
     private void btn_cambiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cambiosActionPerformed
 
 if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt_primerap.getText().equals("") 
-        ||txt_segundoAp.getText().equals("") || txt_edad.getText().equals("")|| txt_promedio.getText().equals("") ){
-            JOptionPane.showMessageDialog(null, "VERIFICA QUE LOS CAMPOS ESTEN COMPLETOS");
+        ||txt_segundoAp.getText().equals("") || txt_edad.getText().equals("")|| txt_promedio.getText().equals("")||JCB_Carrera.getSelectedIndex()==0 || JCB_Semestre.getSelectedIndex()==0){
+    JOptionPane.showMessageDialog(null, "VERIFICA QUE LOS CAMPOS ESTEN COMPLETOS");
         }else{
-            p1= new alumno(Integer.parseInt(Caja_ID.getText()), Double.parseDouble(Caja_Estado_Cuenta.getText()) , Caja_Nombre_Paciente.getText(), Caja_ApellidoP.getText(), Caja_Domicilio.getSelectedItem().toString(), Caja_telefono.getText(), Tipo_Seguro.getSelectedItem().toString(), ComboSala.getSelectedItem().toString());
+ a1 = new alumno(
+    Integer.parseInt(txt_numcontrol.getText()),                     
+    Double.parseDouble(txt_promedio.getText()),                 
+    txt_nombre.getText(),                                          
+    txt_primerap.getText(),                                        
+    txt_segundoAp.getText(),                                       
+    JCB_Carrera.getSelectedItem().toString(),                      
+    Integer.parseInt(JCB_Semestre.getSelectedItem().toString()),   
+    Integer.parseInt(txt_edad.getText()));
+
         
-        f1.FachadaActualizarPacientes(p1);
-        JOptionPane.showMessageDialog(null, "El paciente se ah actualizado correctamente");
+        f1.FachadaActualizarAlumnos(a1);
+        JOptionPane.showMessageDialog(null, "El Alumno se ah actualizado correctamente");
         actualizarTablas(jTable1);
-        metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
+        metodoMagicoParaRestablecerComponentes(txt_numcontrol,
+                txt_promedio,
+                txt_nombre,
+                txt_primerap,
+                txt_segundoAp,
+                JCB_Carrera,
+                JCB_Semestre,
+                txt_edad);
         Boton_Memento.setEnabled(true);
         }        
           
@@ -444,14 +466,22 @@ if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt
         Fondo.setBackground(new java.awt.Color(179, 239, 26));
         lbl_titulo.setBounds(100, 10, 160, 70);
         lbl_titulo.setText("ALTAS");
-        lbl_img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/MIEMBRO_ADD.png")));
+        //lbl_img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/MIEMBRO_ADD.png")));
         btn_bajas.setVisible(false);
         btn_altas.setVisible(true);
         btn_cambios.setVisible(false);
-        //actualizarTablas(jTable1);
+        actualizarTablas(jTable1);
         //Estado_Cuenta.setVisible(false);
         //Caja_Estado_Cuenta.setVisible(false);
-        //metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
+        metodoMagicoParaRestablecerComponentes(txt_numcontrol,
+                txt_promedio,
+                txt_nombre,
+                txt_primerap,
+                txt_segundoAp,
+                JCB_Carrera,
+                JCB_Semestre,
+                txt_edad);
+        Boton_Memento.setEnabled(true);
         Boton_Memento.setEnabled(false);
         
         
@@ -466,14 +496,22 @@ if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt
         Fondo.setBackground(new java.awt.Color(204, 72, 12));
         lbl_titulo.setBounds(100, 10, 160, 70);
         lbl_titulo.setText("BAJAS");
-        lbl_img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Borrar_Miembro.png"))); 
+        //lbl_img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Borrar_Miembro.png"))); 
         btn_bajas.setVisible(true);
         btn_altas.setVisible(false);
         btn_cambios.setVisible(false);
         //actualizarTablas(jTable1);
         //Estado_Cuenta.setVisible(true);
         //Caja_Estado_Cuenta.setVisible(true);
-        //metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
+       metodoMagicoParaRestablecerComponentes(txt_numcontrol,
+                txt_promedio,
+                txt_nombre,
+                txt_primerap,
+                txt_segundoAp,
+                JCB_Carrera,
+                JCB_Semestre,
+                txt_edad);
+        Boton_Memento.setEnabled(true);
           Boton_Memento.setEnabled(false);    }//GEN-LAST:event_JM_BajasActionPerformed
 
     private void JM_CambiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JM_CambiosActionPerformed
@@ -484,15 +522,23 @@ if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt
         Fondo.setBackground(new java.awt.Color(161, 215, 225));
         lbl_titulo.setBounds(100, 10, 230, 70);
         lbl_titulo.setText("CAMBIOS");
-        lbl_img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Cambiar_Miembro.png")));
+        //lbl_img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Cambiar_Miembro.png")));
         btn_bajas.setVisible(false);
         btn_altas.setVisible(false);
         btn_cambios.setVisible(true);
         //actualizarTablas(jTable1);
         //Estado_Cuenta.setVisible(true);
         //Caja_Estado_Cuenta.setVisible(true);
-        //metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
-          Boton_Memento.setEnabled(false);
+        metodoMagicoParaRestablecerComponentes(txt_numcontrol,
+                txt_promedio,
+                txt_nombre,
+                txt_primerap,
+                txt_segundoAp,
+                JCB_Carrera,
+                JCB_Semestre,
+                txt_edad);
+        Boton_Memento.setEnabled(true);
+        Boton_Memento.setEnabled(false);
         
         
     }//GEN-LAST:event_JM_CambiosActionPerformed
@@ -558,27 +604,83 @@ if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt
 
     private void btn_bajasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_bajasActionPerformed
         
-       /* if (p1DAO.buscarPaciente("").isEmpty()){
-            JOptionPane.showMessageDialog(null, "No cuenta con Pacientes actualmente");
-            metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
-        }if(Caja_ID.getText().equals("")){
-            JOptionPane.showMessageDialog(null, "Ups!!... El paciente no existe");
-            metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
-            actualizarTablas(jTable1);
-        }else{
-            paciente estadoAnterior = new paciente(Integer.parseInt(Caja_ID.getText()), Double.parseDouble(Caja_Estado_Cuenta.getText()) , Caja_Nombre_Paciente.getText(), Caja_ApellidoP.getText(), Caja_Domicilio.getSelectedItem().toString(), Caja_telefono.getText(), Tipo_Seguro.getSelectedItem().toString(), ComboSala.getSelectedItem().toString());
-                ultimomemento = new Memento(estadoAnterior);
-           //p1DAO.eliminarPaciente(Caja_ID.getText());
-           f1.FachadaEliminarPaciente(Caja_ID.getText());
-           JOptionPane.showMessageDialog(null, "Paciente eliminado correctamente!!");
-            actualizarTablas(jTable1);
-            metodoMagicoParaRestablecerComponentes(Caja_Nombre_Paciente, Caja_ApellidoP, Caja_Domicilio, Caja_telefono, Tipo_Seguro, ComboSala, Caja_ID, Caja_Estado_Cuenta);
-            Boton_Memento.setEnabled(true);
+      try {
+        // Validar si no hay registros en la base de datos
+        if (a1DAO.buscarAlumno("").isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No cuenta con registros actualmente.");
+            metodoMagicoParaRestablecerComponentes(txt_numcontrol,
+                txt_promedio,
+                txt_nombre,
+                txt_primerap,
+                txt_segundoAp,
+                JCB_Carrera,
+                JCB_Semestre,
+                txt_edad);
+            return;
         }
-        
-       */ 
-        
-        
+
+        // Validar si el campo del número de control está vacío
+        if (txt_numcontrol.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El Alumno no existe.");
+            metodoMagicoParaRestablecerComponentes(txt_numcontrol,
+                txt_promedio,
+                txt_nombre,
+                txt_primerap,
+                txt_segundoAp,
+                JCB_Carrera,
+                JCB_Semestre,
+                txt_edad);
+            actualizarTablas(jTable1);
+            return;
+        }
+
+        // Convertir y validar los datos del alumno
+        int numeroControl = Integer.parseInt(txt_numcontrol.getText().trim());
+        double promedio = Double.parseDouble(txt_promedio.getText().trim());
+        String nombre = txt_nombre.getText().trim();
+        String primerAp = txt_primerap.getText().trim();
+        String segundoAp = txt_segundoAp.getText().trim();
+        String carrera = JCB_Carrera.getSelectedItem().toString();
+        int semestre = Integer.parseInt(JCB_Semestre.getSelectedItem().toString());
+        int edad = Integer.parseInt(txt_edad.getText().trim());
+
+        // Crear el estado anterior para el Memento
+        alumno estadoAnterior = new alumno(
+            numeroControl, 
+            promedio, 
+            nombre, 
+            primerAp, 
+            segundoAp, 
+            carrera, 
+            semestre, 
+            edad
+        );
+
+        // Guardar el estado anterior en el Memento
+        ultimomemento = new Memento(estadoAnterior);
+
+        // Eliminar al alumno
+        f1.FachadaEliminarAlumno(String.valueOf(numeroControl));
+        JOptionPane.showMessageDialog(null, "Alumno eliminado correctamente.");
+
+        // Actualizar la tabla y restablecer los componentes
+        actualizarTablas(jTable1);
+        metodoMagicoParaRestablecerComponentes(txt_numcontrol,
+            txt_promedio,
+            txt_nombre,
+            txt_primerap,
+            txt_segundoAp,
+            JCB_Carrera,
+            JCB_Semestre,
+            txt_edad);
+
+        // Habilitar el botón de restaurar
+        Boton_Memento.setEnabled(true);
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Error: Verifique que los datos sean correctos y numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btn_bajasActionPerformed
 
     private void txt_numcontrolKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_numcontrolKeyReleased
@@ -605,12 +707,77 @@ if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt
             txt_edad.setText(String.valueOf( jTable1.getValueAt(jTable1.getSelectedRow(),7)));
             txt_promedio.setText(String.valueOf( jTable1.getValueAt(jTable1.getSelectedRow(),1)));
             
-            alumno estadoAnterior = new alumno(Integer.parseInt(txt_numcontrol.getText()), Double.parseDouble(txt_promedio.getText()) , txt_nombre.getText(),
-                    txt_primerap.getText(), txt_segundoAp.getText().toString(), JCB_Carrera.getSelectedItem(), JCB_Semestre.getSelectedItem().toString(), txt_edad.toString());
-           // ultimomemento = new Memento(estadoAnterior);
+            alumno estadoAnterior = new alumno(
+                    Integer.parseInt(txt_numcontrol.getText()),                     
+    Double.parseDouble(txt_promedio.getText()),                 
+    txt_nombre.getText(),                                          
+    txt_primerap.getText(),                                        
+    txt_segundoAp.getText(),                                       
+    JCB_Carrera.getSelectedItem().toString(),                      
+    Integer.parseInt(JCB_Semestre.getSelectedItem().toString()),   
+    Integer.parseInt(txt_edad.getText()));
+           ultimomemento = new Memento(estadoAnterior);
              
         }
     }//GEN-LAST:event_jScrollPane1MouseReleased
+
+    private void btn_altasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_altasActionPerformed
+       try {
+        // Validar si los campos están completos
+        if (txt_nombre.getText().isEmpty() || 
+            txt_primerap.getText().isEmpty() || 
+            txt_segundoAp.getText().isEmpty() || 
+            txt_edad.getText().isEmpty() || 
+            txt_promedio.getText().isEmpty() || 
+            JCB_Carrera.getSelectedIndex() == 0 || 
+            JCB_Semestre.getSelectedIndex() == 0) {
+
+            JOptionPane.showMessageDialog(null, "VERIFICA QUE TODOS LOS CAMPOS ESTÉN COMPLETOS");
+            return;
+        }
+
+        // Validar el formato de los campos numéricos
+        int numeroControl;
+        int edad;
+        double promedio;
+
+        try {
+            numeroControl = Integer.parseInt(txt_numcontrol.getText().trim());
+            edad = Integer.parseInt(txt_edad.getText().trim());
+            promedio = Double.parseDouble(txt_promedio.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Error: Asegúrese de que la edad, promedio y número de control sean valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Crear un nuevo objeto alumno
+        alumno nuevoAlumno = new alumno(
+            numeroControl,
+            promedio,
+            txt_nombre.getText().trim(),
+            txt_primerap.getText().trim(),
+            txt_segundoAp.getText().trim(),
+            JCB_Carrera.getSelectedItem().toString(),
+            Integer.parseInt(JCB_Semestre.getSelectedItem().toString()),
+            edad
+        );
+
+        // Guardar el alumno utilizando la fachada
+        if (Fachada.FachadaAgregarAlumnos(nuevoAlumno)) {
+            // Mensaje de confirmación
+            JOptionPane.showMessageDialog(null, "Alumno ingresado con éxito!");
+
+            // Actualizar la tabla y restablecer los componentes
+            actualizarTablas(jTable1);
+            metodoMagicoParaRestablecerComponentes(txt_numcontrol, txt_promedio, txt_nombre, txt_primerap, txt_segundoAp, JCB_Carrera, JCB_Semestre, txt_edad);
+            Boton_Memento.setEnabled(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al ingresar el alumno. Verifique los datos e intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_btn_altasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -701,6 +868,21 @@ if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt
             }
         }
     }//metodoParaVaciado
+    public void actualizarTablas(JTable tabla) {
+    String controlador = "org.postgresql.Driver";
+    String URL = "jdbc:postgresql://localhost:5432/proyecto_tutorias"; // Incluye el nombre de la base de datos
+    String consulta = "SELECT * FROM public.alumno ORDER BY NumeroControl"; // Asegúrate de usar el esquema correcto
+
+    try {
+        ResultSetTableModel modeloTabla = new ResultSetTableModel(controlador, URL, consulta); // Crea el modelo una vez
+        tabla.setModel(modeloTabla); // Asigna el modelo a la tabla
+    } catch (ClassNotFoundException e) {
+        throw new RuntimeException("Error: No se encontró el controlador de PostgreSQL", e);
+    } catch (SQLException e) {
+        throw new RuntimeException("Error: Problema al ejecutar la consulta SQL", e);
+    }
+}
+//Metodo Actualizar Tablas
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JInternalFrame ABCC;
