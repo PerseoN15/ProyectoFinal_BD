@@ -450,6 +450,7 @@
                 <Component class="javax.swing.JTextPane" name="txt_numcontrol">
                   <Events>
                     <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_numcontrolKeyReleased"/>
+                    <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_numcontrolKeyTyped"/>
                   </Events>
                 </Component>
               </SubComponents>

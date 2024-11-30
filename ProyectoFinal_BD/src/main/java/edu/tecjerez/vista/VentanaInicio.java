@@ -200,6 +200,9 @@ public class VentanaInicio extends javax.swing.JFrame {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_numcontrolKeyReleased(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_numcontrolKeyTyped(evt);
+            }
         });
         jScrollPane2.setViewportView(txt_numcontrol);
 
@@ -709,7 +712,7 @@ try {
     }//GEN-LAST:event_btn_bajasActionPerformed
 
     private void txt_numcontrolKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_numcontrolKeyReleased
-        // TODO add your handling code here:
+         
     }//GEN-LAST:event_txt_numcontrolKeyReleased
 
     private void txt_nombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_nombreKeyReleased
@@ -803,6 +806,16 @@ try {
         JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
     }//GEN-LAST:event_btn_altasActionPerformed
+
+    private void txt_numcontrolKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_numcontrolKeyTyped
+        char c = evt.getKeyChar();
+    if (!Character.isDigit(c)) {
+        evt.consume();
+    }
+    if (txt_numcontrol.getText().length() >= 8) {
+        evt.consume();
+    }
+    }//GEN-LAST:event_txt_numcontrolKeyTyped
 
     /**
      * @param args the command line arguments
