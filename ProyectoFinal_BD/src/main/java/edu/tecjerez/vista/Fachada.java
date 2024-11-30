@@ -162,53 +162,50 @@ pstm.setInt(8, alum.getNumeroControl());
         //====================================================================================================================
 
   
-    public static boolean FachadaEliminarAlumno(String numeroControl) {
-    boolean resultado = false;
+    public static boolean FachadaEliminarAlumno(String filtro) {
+    boolean res = false;
     Connection conexion = getConexion();
-
-    if (numeroControl == null || numeroControl.trim().isEmpty()) {
-        System.out.println("El Número de Control no puede estar vacío o nulo.");
-        return false;
-    }
-
     try {
-        conexion.setAutoCommit(false); // Inicia la transacción
+        conexion.setAutoCommit(false);
 
-        // Consulta para eliminar el alumno
+        // Asegúrate de usar una comparación correcta para el tipo de dato
         String sql = "DELETE FROM alumno WHERE NumeroControl = ?";
-        try (PreparedStatement pstm = conexion.prepareStatement(sql)) {
-            pstm.setString(1, numeroControl);
+        pstm = conexion.prepareStatement(sql);
 
-            int filasAfectadas = pstm.executeUpdate();
+        // Convertir el filtro a entero si es necesario
+        pstm.setInt(1, Integer.parseInt(filtro));
 
-            if (filasAfectadas > 0) {
-                System.out.println("Alumno eliminado exitosamente.");
-                resultado = true;
-            } else {
-                System.out.println("No se encontró un alumno con el Número de Control: " + numeroControl);
-            }
+        // Ejecutar la consulta
+        int rowsAffected = pstm.executeUpdate();
+
+        if (rowsAffected > 0) {
+            res = true;
+            conexion.commit();
+        } else {
+            System.out.println("No se encontró ningún alumno con el Número de Control proporcionado.");
         }
-
-        conexion.commit(); // Confirmar los cambios
-    } catch (SQLException e) {
-        System.out.println("Error en FachadaEliminarAlumno: " + e.getMessage());
-        e.printStackTrace();
-
+    } catch (NumberFormatException e) {
+        System.out.println("Error: El filtro proporcionado no es un número válido. " + e.getMessage());
+    } catch (SQLException ex) {
+        System.out.println("Error en FachadaEliminarAlumno: " + ex.getMessage());
         try {
-            conexion.rollback(); // Deshacer los cambios en caso de error
-        } catch (SQLException ex) {
-            System.out.println("Error al realizar rollback: " + ex.getMessage());
+            conexion.rollback();
+        } catch (SQLException e) {
+            System.out.println("Error al hacer el rollback en FachadaEliminarAlumno: " + e.getMessage());
         }
     } finally {
         try {
             conexion.setAutoCommit(true);
+            if (pstm != null) {
+                pstm.close();
+            }
         } catch (SQLException e) {
-            System.out.println("Error al restablecer auto-commit: " + e.getMessage());
+            e.printStackTrace();
         }
     }
-
-    return resultado;
+    return res;
 }
+
 
             //====================================================================================================================
 
