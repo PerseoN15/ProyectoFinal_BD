@@ -162,37 +162,54 @@ pstm.setInt(8, alum.getNumeroControl());
         //====================================================================================================================
 
   
-    public static boolean FachadaEliminarAlumno(String filtro){
-        boolean res = false;
-        Connection conexion = getConexion();
-        try {
-            conexion.setAutoCommit(false);
-            String sql= "DELETE from paciente where NumeroControl= '"+filtro+"'";
-            pstm = conexion.prepareStatement(sql);
-            pstm.executeUpdate();
-            res= true;
-            conexion.commit();
-        } catch (Exception ex) {
-            System.out.println("ERROR");
-            try {
-                conexion.rollback();
-            } catch (SQLException e) {
-                System.out.println("Error al hacer el rollback de eliminacion");
-                e.printStackTrace();
-            }
-        } finally{
-            try {
-                conexion.setAutoCommit(true);
-                if(pstm != null){
-                    pstm.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+    public static boolean FachadaEliminarAlumno(String numeroControl) {
+    boolean resultado = false;
+    Connection conexion = getConexion();
+
+    if (numeroControl == null || numeroControl.trim().isEmpty()) {
+        System.out.println("El Número de Control no puede estar vacío o nulo.");
+        return false;
+    }
+
+    try {
+        conexion.setAutoCommit(false); // Inicia la transacción
+
+        // Consulta para eliminar el alumno
+        String sql = "DELETE FROM alumno WHERE NumeroControl = ?";
+        try (PreparedStatement pstm = conexion.prepareStatement(sql)) {
+            pstm.setString(1, numeroControl);
+
+            int filasAfectadas = pstm.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                System.out.println("Alumno eliminado exitosamente.");
+                resultado = true;
+            } else {
+                System.out.println("No se encontró un alumno con el Número de Control: " + numeroControl);
             }
         }
-        return res;
 
+        conexion.commit(); // Confirmar los cambios
+    } catch (SQLException e) {
+        System.out.println("Error en FachadaEliminarAlumno: " + e.getMessage());
+        e.printStackTrace();
+
+        try {
+            conexion.rollback(); // Deshacer los cambios en caso de error
+        } catch (SQLException ex) {
+            System.out.println("Error al realizar rollback: " + ex.getMessage());
+        }
+    } finally {
+        try {
+            conexion.setAutoCommit(true);
+        } catch (SQLException e) {
+            System.out.println("Error al restablecer auto-commit: " + e.getMessage());
+        }
     }
+
+    return resultado;
+}
+
             //====================================================================================================================
 
     
