@@ -243,47 +243,56 @@ pstm.setInt(8, alum.getNumeroControl());
     }
         //====================================================================================================================
 
-    public static boolean FachadaActualizarAlumnos(alumno alum){
-        Connection conexion = getConexion();
-        
-        try {
-            conexion.setAutoCommit(false); //CON ESTO INICIA LA TRANSACCION 
-            pstm = conexion.prepareStatement("UPDATE alumno SET Nombre = ?, PrimerAp = ?, SegundoAp = ?, Carrera = ?, Semestre = ?, Edad = ?, Promedio = ? WHERE NumeroControl = ?");
-            pstm.setString(1, alum.getNombre());
-            pstm.setString(2, alum.getPrimerAp());
-            pstm.setString(3, alum.getSegundorAp());
-            pstm.setString(4, alum.getCarrera());
-            pstm.setInt(5, alum.getSemestre());
-            pstm.setInt(6, alum.getEdad());
-            pstm.setDouble(7, alum.getPromedio());
-            pstm.setInt(8, alum.getNumeroControl());
+    public static boolean FachadaActualizarAlumnos(alumno alum) {
+    Connection conexion = getConexion();
 
-            pstm.executeUpdate();
-            
-            conexion.commit(); // AQUI SE GENERA EL COMMIT
-            return true;
-        } catch (SQLException e) {
-            System.out.println("Error en ActualizarPaciente en Fachada.java");
-            e.printStackTrace();
-            try {
-                conexion.rollback(); // EN CASO DE ERROR AQUI SE GENERA EL ROLLBACK
-            } catch (SQLException ex) {
-                System.out.println("Error en el rollback de acutalizaciones");
-                ex.printStackTrace();
-            }
-            
-        } finally {
-            try {
-                conexion.setAutoCommit(true);
-                if(pstm != null){
-                    pstm.close();
-                }
-            } catch (SQLException m) {
-                m.printStackTrace();
-            }
+    try {
+        // Validar que el promedio cumpla con las restricciones
+        if (alum.getPromedio() < 0 || alum.getPromedio() > 100) {
+            System.out.println("Error: El promedio debe estar entre 0 y 100.");
+            return false;
         }
-        return false;
+
+        conexion.setAutoCommit(false); // Inicia la transacción
+
+        // Preparar la consulta de actualización
+        pstm = conexion.prepareStatement("UPDATE alumno SET Nombre = ?, PrimerAp = ?, SegundoAp = ?, Carrera = ?, Semestre = ?, Edad = ?, Promedio = ? WHERE NumeroControl = ?");
+        pstm.setString(1, alum.getNombre());
+        pstm.setString(2, alum.getPrimerAp());
+        pstm.setString(3, alum.getSegundorAp());
+        pstm.setString(4, alum.getCarrera());
+        pstm.setInt(5, alum.getSemestre());
+        pstm.setInt(6, alum.getEdad());
+        pstm.setDouble(7, alum.getPromedio());
+        pstm.setInt(8, alum.getNumeroControl());
+
+        pstm.executeUpdate(); // Ejecutar la consulta
+
+        conexion.commit(); // Confirmar la transacción
+        return true;
+
+    } catch (SQLException e) {
+        System.out.println("Error en ActualizarPaciente en Fachada.java");
+        e.printStackTrace();
+        try {
+            conexion.rollback(); // Revertir la transacción en caso de error
+        } catch (SQLException ex) {
+            System.out.println("Error en el rollback de actualizaciones");
+            ex.printStackTrace();
+        }
+    } finally {
+        try {
+            conexion.setAutoCommit(true); // Restaurar el comportamiento por defecto
+            if (pstm != null) {
+                pstm.close();
+            }
+        } catch (SQLException m) {
+            m.printStackTrace();
+        }
     }
+    return false;
+}
+
     
       //====================================================================================================================
   
