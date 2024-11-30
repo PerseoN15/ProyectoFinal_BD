@@ -603,11 +603,10 @@ if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt
     }//GEN-LAST:event_JM_FuncionActionPerformed
 
     private void btn_bajasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_bajasActionPerformed
-        
-      try {
+     try {
         // Validar si no hay registros en la base de datos
         if (a1DAO.buscarAlumno("").isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No cuenta con registros actualmente.");
+            JOptionPane.showMessageDialog(null, "No hay registros actualmente.");
             metodoMagicoParaRestablecerComponentes(txt_numcontrol,
                 txt_promedio,
                 txt_nombre,
@@ -620,8 +619,9 @@ if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt
         }
 
         // Validar si el campo del número de control está vacío
-        if (txt_numcontrol.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "El Alumno no existe.");
+        String numeroControl = txt_numcontrol.getText().trim();
+        if (numeroControl.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, ingresa un Número de Control válido.");
             metodoMagicoParaRestablecerComponentes(txt_numcontrol,
                 txt_promedio,
                 txt_nombre,
@@ -634,34 +634,24 @@ if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt
             return;
         }
 
-        // Convertir y validar los datos del alumno
-        int numeroControl = Integer.parseInt(txt_numcontrol.getText().trim());
-        double promedio = Double.parseDouble(txt_promedio.getText().trim());
-        String nombre = txt_nombre.getText().trim();
-        String primerAp = txt_primerap.getText().trim();
-        String segundoAp = txt_segundoAp.getText().trim();
-        String carrera = JCB_Carrera.getSelectedItem().toString();
-        int semestre = Integer.parseInt(JCB_Semestre.getSelectedItem().toString());
-        int edad = Integer.parseInt(txt_edad.getText().trim());
+        // Confirmación antes de eliminar
+        int confirmacion = JOptionPane.showConfirmDialog(null, 
+            "¿Estás seguro de que deseas eliminar al alumno con Número de Control: " + numeroControl + "?", 
+            "Confirmación", 
+            JOptionPane.YES_NO_OPTION);
 
-        // Crear el estado anterior para el Memento
-        alumno estadoAnterior = new alumno(
-            numeroControl, 
-            promedio, 
-            nombre, 
-            primerAp, 
-            segundoAp, 
-            carrera, 
-            semestre, 
-            edad
-        );
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
 
-        // Guardar el estado anterior en el Memento
-        ultimomemento = new Memento(estadoAnterior);
+        // Llama a la fachada para eliminar al alumno
+        boolean eliminado = Fachada.FachadaEliminarAlumno(numeroControl);
 
-        // Eliminar al alumno
-        f1.FachadaEliminarAlumno(String.valueOf(numeroControl));
-        JOptionPane.showMessageDialog(null, "Alumno eliminado correctamente.");
+        if (eliminado) {
+            JOptionPane.showMessageDialog(null, "Alumno eliminado correctamente.");
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró un alumno con el Número de Control especificado.");
+        }
 
         // Actualizar la tabla y restablecer los componentes
         actualizarTablas(jTable1);
@@ -674,10 +664,10 @@ if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt
             JCB_Semestre,
             txt_edad);
 
-        // Habilitar el botón de restaurar
+        // Habilitar el botón de restaurar (si es necesario)
         Boton_Memento.setEnabled(true);
     } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(null, "Error: Verifique que los datos sean correctos y numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Error: Verifica que el Número de Control sea numérico.", "Error", JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
