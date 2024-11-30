@@ -426,36 +426,71 @@ public class VentanaInicio extends javax.swing.JFrame {
     }//GEN-LAST:event_JCB_CarreraActionPerformed
 
     private void btn_cambiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cambiosActionPerformed
+try {
+        // Validar si los campos están completos
+        if (txt_numcontrol.getText().isEmpty() || 
+            txt_nombre.getText().isEmpty() || 
+            txt_primerap.getText().isEmpty() || 
+            txt_segundoAp.getText().isEmpty() || 
+            txt_edad.getText().isEmpty() || 
+            txt_promedio.getText().isEmpty() || 
+            JCB_Carrera.getSelectedIndex() == 0 || 
+            JCB_Semestre.getSelectedIndex() == 0) {
+            
+            JOptionPane.showMessageDialog(null, "VERIFICA QUE TODOS LOS CAMPOS ESTÉN COMPLETOS");
+            return;
+        }
 
-if(txt_numcontrol.getText().equals("") || txt_nombre.getText().equals("") || txt_primerap.getText().equals("") 
-        ||txt_segundoAp.getText().equals("") || txt_edad.getText().equals("")|| txt_promedio.getText().equals("")||JCB_Carrera.getSelectedIndex()==0 || JCB_Semestre.getSelectedIndex()==0){
-    JOptionPane.showMessageDialog(null, "VERIFICA QUE LOS CAMPOS ESTEN COMPLETOS");
-        }else{
- a1 = new alumno(
-    Integer.parseInt(txt_numcontrol.getText()),                     
-    Double.parseDouble(txt_promedio.getText()),                 
-    txt_nombre.getText(),                                          
-    txt_primerap.getText(),                                        
-    txt_segundoAp.getText(),                                       
-    JCB_Carrera.getSelectedItem().toString(),                      
-    Integer.parseInt(JCB_Semestre.getSelectedItem().toString()),   
-    Integer.parseInt(txt_edad.getText()));
+        // Validar si el promedio está en el rango permitido
+        double promedio = Double.parseDouble(txt_promedio.getText().trim());
+        if (promedio < 0 || promedio > 100) {
+            JOptionPane.showMessageDialog(null, "El promedio debe estar entre 0 y 100.");
+            return;
+        }
 
-        
-        f1.FachadaActualizarAlumnos(a1);
-        JOptionPane.showMessageDialog(null, "El Alumno se ah actualizado correctamente");
-        actualizarTablas(jTable1);
-        metodoMagicoParaRestablecerComponentes(txt_numcontrol,
-                txt_promedio,
-                txt_nombre,
-                txt_primerap,
-                txt_segundoAp,
-                JCB_Carrera,
-                JCB_Semestre,
-                txt_edad);
-        Boton_Memento.setEnabled(true);
-        }        
-          
+        // Crear un nuevo objeto alumno con los datos ingresados
+        alumno a1 = new alumno(
+            Integer.parseInt(txt_numcontrol.getText().trim()),  // Número de control
+            promedio,                                          // Promedio
+            txt_nombre.getText().trim(),                      // Nombre
+            txt_primerap.getText().trim(),                    // Primer apellido
+            txt_segundoAp.getText().trim(),                   // Segundo apellido
+            JCB_Carrera.getSelectedItem().toString(),         // Carrera
+            Integer.parseInt(JCB_Semestre.getSelectedItem().toString()), // Semestre
+            Integer.parseInt(txt_edad.getText().trim())        // Edad
+        );
+
+        // Actualizar el alumno en la base de datos
+        if (f1.FachadaActualizarAlumnos(a1)) {
+            // Mostrar mensaje de éxito
+            JOptionPane.showMessageDialog(null, "El Alumno se ha actualizado correctamente");
+
+            // Actualizar la tabla con los nuevos datos
+            actualizarTablas(jTable1);
+
+            // Restablecer los campos de entrada
+            metodoMagicoParaRestablecerComponentes(
+                txt_numcontrol, 
+                txt_promedio, 
+                txt_nombre, 
+                txt_primerap, 
+                txt_segundoAp, 
+                JCB_Carrera, 
+                JCB_Semestre, 
+                txt_edad
+            );
+
+            // Habilitar el botón de Memento
+            Boton_Memento.setEnabled(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se pudo actualizar el alumno. Verifique los datos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Error: Verifique que los datos sean correctos y numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     }//GEN-LAST:event_btn_cambiosActionPerformed
 
     private void JM_AltasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JM_AltasActionPerformed
