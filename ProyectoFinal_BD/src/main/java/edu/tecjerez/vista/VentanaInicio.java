@@ -8,6 +8,7 @@ import Controlador.AlumnoDAO;
 import MODELO.Memento;
 import MODELO.alumno;
 import java.awt.Component;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -267,6 +268,11 @@ public class VentanaInicio extends javax.swing.JFrame {
         lbl_promedio.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         lbl_promedio.setText("Promedio");
 
+        txt_promedio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_promedioKeyTyped(evt);
+            }
+        });
         jScrollPane7.setViewportView(txt_promedio);
 
         javax.swing.GroupLayout ABCCLayout = new javax.swing.GroupLayout(ABCC.getContentPane());
@@ -750,8 +756,7 @@ try {
     }//GEN-LAST:event_jScrollPane1MouseReleased
 
     private void btn_altasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_altasActionPerformed
-       try {
-        // Validar si los campos están completos
+        try {
         if (txt_nombre.getText().isEmpty() || 
             txt_primerap.getText().isEmpty() || 
             txt_segundoAp.getText().isEmpty() || 
@@ -764,44 +769,60 @@ try {
             return;
         }
 
-        // Validar el formato de los campos numéricos
-        int numeroControl;
-        int edad;
-        double promedio;
-
-        try {
-            numeroControl = Integer.parseInt(txt_numcontrol.getText().trim());
-            edad = Integer.parseInt(txt_edad.getText().trim());
-            promedio = Double.parseDouble(txt_promedio.getText().trim());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error: Asegúrese de que la edad, promedio y número de control sean valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        double promedio = Double.parseDouble(txt_promedio.getText());
+        if (promedio < 0 || promedio > 100) {
+            JOptionPane.showMessageDialog(null, "El promedio debe estar entre 0 y 100.");
             return;
         }
 
-        // Crear un nuevo objeto alumno
-        alumno nuevoAlumno = new alumno(
-            numeroControl,
-            promedio,
-            txt_nombre.getText().trim(),
-            txt_primerap.getText().trim(),
-            txt_segundoAp.getText().trim(),
-            JCB_Carrera.getSelectedItem().toString(),
-            Integer.parseInt(JCB_Semestre.getSelectedItem().toString()),
-            edad
-        );
+        if (a1DAO.buscarAlumno("").isEmpty()) {
+            cont++;
+            txt_numcontrol.setText(String.valueOf(cont));
 
-        // Guardar el alumno utilizando la fachada
-        if (Fachada.FachadaAgregarAlumnos(nuevoAlumno)) {
-            // Mensaje de confirmación
+            alumno nuevoAlumno = new alumno(
+                cont,
+                promedio,
+                txt_nombre.getText(),
+                txt_primerap.getText(),
+                txt_segundoAp.getText(),
+                JCB_Carrera.getSelectedItem().toString(),
+                Integer.parseInt(JCB_Semestre.getSelectedItem().toString()),
+                Integer.parseInt(txt_edad.getText())
+            );
+
+            ultimomemento = new Memento(nuevoAlumno);
+            f1.FachadaAgregarAlumnos(nuevoAlumno);
+
             JOptionPane.showMessageDialog(null, "Alumno ingresado con éxito!");
-
-            // Actualizar la tabla y restablecer los componentes
             actualizarTablas(jTable1);
             metodoMagicoParaRestablecerComponentes(txt_numcontrol, txt_promedio, txt_nombre, txt_primerap, txt_segundoAp, JCB_Carrera, JCB_Semestre, txt_edad);
             Boton_Memento.setEnabled(true);
         } else {
-            JOptionPane.showMessageDialog(null, "Error al ingresar el alumno. Verifique los datos e intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+            cont = a1DAO.buscarAlumno("").getLast().getNumeroControl();
+            cont++;
+            txt_numcontrol.setText(String.valueOf(cont));
+
+            alumno nuevoAlumno = new alumno(
+                cont,
+                promedio,
+                txt_nombre.getText(),
+                txt_primerap.getText(),
+                txt_segundoAp.getText(),
+                JCB_Carrera.getSelectedItem().toString(),
+                Integer.parseInt(JCB_Semestre.getSelectedItem().toString()),
+                Integer.parseInt(txt_edad.getText())
+            );
+
+            ultimomemento = new Memento(nuevoAlumno);
+            f1.FachadaAgregarAlumnos(nuevoAlumno);
+
+            JOptionPane.showMessageDialog(null, "Alumno ingresado con éxito!");
+            actualizarTablas(jTable1);
+            metodoMagicoParaRestablecerComponentes(txt_numcontrol, txt_promedio, txt_nombre, txt_primerap, txt_segundoAp, JCB_Carrera, JCB_Semestre, txt_edad);
+            Boton_Memento.setEnabled(true);
         }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Por favor, ingrese valores numéricos válidos en los campos correspondientes.");
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
@@ -809,13 +830,51 @@ try {
 
     private void txt_numcontrolKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_numcontrolKeyTyped
         char c = evt.getKeyChar();
-    if (!Character.isDigit(c)) {
-        evt.consume();
-    }
-    if (txt_numcontrol.getText().length() >= 8) {
-        evt.consume();
-    }
+        if (!Character.isDigit(c)) {
+            evt.consume();
+        }
+        if (txt_numcontrol.getText().length() >= 8) {
+            evt.consume();
+        }
     }//GEN-LAST:event_txt_numcontrolKeyTyped
+
+    private void txt_promedioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_promedioKeyTyped
+       char c = evt.getKeyChar();
+    String text = txt_promedio.getText();
+
+    // Permitir solo números, un punto decimal, y verificar longitud
+    if (!Character.isDigit(c) && c != '.') {
+        evt.consume();
+        return;
+    }
+
+    // Evitar más de un punto decimal
+    if (c == '.' && text.contains(".")) {
+        evt.consume();
+        return;
+    }
+
+    // Validar que los decimales no sean más de dos
+    if (text.contains(".") && text.substring(text.indexOf(".") + 1).length() >= 2 && c != KeyEvent.VK_BACK_SPACE) {
+        evt.consume();
+        return;
+    }
+
+    // Validar rango entre 1 y 100
+    try {
+        String newText = c == '.' ? text + c : text + (c == KeyEvent.VK_BACK_SPACE ? "" : String.valueOf(c));
+        if (!newText.isEmpty() && !newText.equals(".")) {
+            double value = Double.parseDouble(newText);
+            if (value < 1 || value > 100) {
+                evt.consume();
+            }
+        }
+    } catch (NumberFormatException e) {
+        evt.consume();
+    }
+
+
+    }//GEN-LAST:event_txt_promedioKeyTyped
 
     /**
      * @param args the command line arguments
