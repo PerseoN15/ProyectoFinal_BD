@@ -4,21 +4,34 @@
  */
 package vista;
 
+import Conexion.Conexion;
 import Controlador.AlumnoDAO;
 import MODELO.Memento;
 import MODELO.alumno;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -46,6 +59,7 @@ public class VentanaInicio extends javax.swing.JFrame {
         GrupoBotones.add(lbl_promedio_C);
         GrupoBotones.add(RB_Todos_C);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -115,6 +129,7 @@ public class VentanaInicio extends javax.swing.JFrame {
         JCB_Carrera_C = new javax.swing.JComboBox<>();
         jScrollPane8 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
+        btn_buscar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         JM_Alumnos = new javax.swing.JMenu();
         JM_Altas = new javax.swing.JMenuItem();
@@ -124,8 +139,8 @@ public class VentanaInicio extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenu1 = new javax.swing.JMenu();
         Grafico = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        reportes = new javax.swing.JMenuItem();
+        vista = new javax.swing.JMenuItem();
         JM_Funcion = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -411,7 +426,7 @@ public class VentanaInicio extends javax.swing.JFrame {
             }
         });
         PanelConsultas.add(RB_Todos_C);
-        RB_Todos_C.setBounds(450, 30, 110, 27);
+        RB_Todos_C.setBounds(560, 30, 110, 27);
 
         titulo_Consultas.setFont(new java.awt.Font("Segoe UI Semibold", 1, 24)); // NOI18N
         titulo_Consultas.setText("CONSULTAS");
@@ -484,6 +499,9 @@ public class VentanaInicio extends javax.swing.JFrame {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_primerAp_CKeyReleased(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_primerAp_CKeyTyped(evt);
+            }
         });
         PanelConsultas.add(txt_primerAp_C);
         txt_primerAp_C.setBounds(220, 200, 160, 30);
@@ -506,7 +524,7 @@ public class VentanaInicio extends javax.swing.JFrame {
             }
         });
         PanelConsultas.add(lbl_semestre_C);
-        lbl_semestre_C.setBounds(400, 150, 130, 27);
+        lbl_semestre_C.setBounds(670, 140, 40, 10);
 
         JCB_semestre_C.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleciona ", "1", "2", "3", "4", "5", "6", "7", "8", "9" }));
         JCB_semestre_C.addActionListener(new java.awt.event.ActionListener() {
@@ -515,7 +533,7 @@ public class VentanaInicio extends javax.swing.JFrame {
             }
         });
         PanelConsultas.add(JCB_semestre_C);
-        JCB_semestre_C.setBounds(550, 150, 110, 30);
+        JCB_semestre_C.setBounds(670, 130, 30, 20);
 
         lbl_edad_c.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         lbl_edad_c.setText("Edad");
@@ -525,7 +543,7 @@ public class VentanaInicio extends javax.swing.JFrame {
             }
         });
         PanelConsultas.add(lbl_edad_c);
-        lbl_edad_c.setBounds(400, 200, 100, 27);
+        lbl_edad_c.setBounds(400, 170, 100, 27);
 
         lbl_SegundoAp_C.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         lbl_SegundoAp_C.setText("Segundo Apellido");
@@ -586,7 +604,7 @@ public class VentanaInicio extends javax.swing.JFrame {
             }
         });
         PanelConsultas.add(txt_Edad_C);
-        txt_Edad_C.setBounds(550, 200, 110, 30);
+        txt_Edad_C.setBounds(550, 170, 110, 30);
 
         txt_nombre_c.setPreferredSize(new java.awt.Dimension(62, 20));
         txt_nombre_c.addActionListener(new java.awt.event.ActionListener() {
@@ -630,6 +648,10 @@ public class VentanaInicio extends javax.swing.JFrame {
 
         PanelConsultas.add(jScrollPane8);
         jScrollPane8.setBounds(0, 290, 710, 260);
+
+        btn_buscar.setText("jButton1");
+        PanelConsultas.add(btn_buscar);
+        btn_buscar.setBounds(390, 33, 90, 30);
 
         FrameConsultas.getContentPane().add(PanelConsultas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 723, 544));
 
@@ -677,13 +699,28 @@ public class VentanaInicio extends javax.swing.JFrame {
         jMenu1.setText("Otros");
 
         Grafico.setText("Graficos");
+        Grafico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GraficoActionPerformed(evt);
+            }
+        });
         jMenu1.add(Grafico);
 
-        jMenuItem2.setText("Reportes");
-        jMenu1.add(jMenuItem2);
+        reportes.setText("Reportes");
+        reportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportesActionPerformed(evt);
+            }
+        });
+        jMenu1.add(reportes);
 
-        jMenuItem3.setText("Vista con JOINS");
-        jMenu1.add(jMenuItem3);
+        vista.setText("Vista con JOINS");
+        vista.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vistaActionPerformed(evt);
+            }
+        });
+        jMenu1.add(vista);
 
         JM_Funcion.setText("Function");
         JM_Funcion.addActionListener(new java.awt.event.ActionListener() {
@@ -1055,7 +1092,15 @@ try {
     }//GEN-LAST:event_jScrollPane1MouseReleased
 
     private void btn_altasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_altasActionPerformed
-        try {
+         try {
+        // Validar si la conexión está activa
+        Connection conexion = Conexion.getConexion();
+        if (conexion == null || conexion.isClosed()) {
+            JOptionPane.showMessageDialog(this, "Error: No se puede conectar a la base de datos.");
+            return; // Salir si no hay conexión
+        }
+
+        // Validar si todos los campos están completos
         if (txt_nombre.getText().isEmpty() || 
             txt_primerap.getText().isEmpty() || 
             txt_segundoAp.getText().isEmpty() || 
@@ -1064,16 +1109,17 @@ try {
             JCB_Carrera.getSelectedIndex() == 0 || 
             JCB_Semestre.getSelectedIndex() == 0) {
 
-            JOptionPane.showMessageDialog(null, "VERIFICA QUE TODOS LOS CAMPOS ESTÉN COMPLETOS");
+            JOptionPane.showMessageDialog(this, "VERIFICA QUE TODOS LOS CAMPOS ESTÉN COMPLETOS");
             return;
         }
 
         double promedio = Double.parseDouble(txt_promedio.getText());
         if (promedio < 0 || promedio > 100) {
-            JOptionPane.showMessageDialog(null, "El promedio debe estar entre 0 y 100.");
+            JOptionPane.showMessageDialog(this, "El promedio debe estar entre 0 y 100.");
             return;
         }
 
+        // Obtener el número de control de manera incremental
         if (a1DAO.buscarAlumno("").isEmpty()) {
             cont++;
             txt_numcontrol.setText(String.valueOf(cont));
@@ -1092,7 +1138,7 @@ try {
             ultimomemento = new Memento(nuevoAlumno);
             f1.FachadaAgregarAlumnos(nuevoAlumno);
 
-            JOptionPane.showMessageDialog(null, "Alumno ingresado con éxito!");
+            JOptionPane.showMessageDialog(this, "Alumno ingresado con éxito!");
             actualizarTablas(jTable1);
             metodoMagicoParaRestablecerComponentes(txt_numcontrol, txt_promedio, txt_nombre, txt_primerap, txt_segundoAp, JCB_Carrera, JCB_Semestre, txt_edad);
             Boton_Memento.setEnabled(true);
@@ -1115,15 +1161,15 @@ try {
             ultimomemento = new Memento(nuevoAlumno);
             f1.FachadaAgregarAlumnos(nuevoAlumno);
 
-            JOptionPane.showMessageDialog(null, "Alumno ingresado con éxito!");
+            JOptionPane.showMessageDialog(this, "Alumno ingresado con éxito!");
             actualizarTablas(jTable1);
             metodoMagicoParaRestablecerComponentes(txt_numcontrol, txt_promedio, txt_nombre, txt_primerap, txt_segundoAp, JCB_Carrera, JCB_Semestre, txt_edad);
             Boton_Memento.setEnabled(true);
         }
     } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(null, "Por favor, ingrese valores numéricos válidos en los campos correspondientes.");
+        JOptionPane.showMessageDialog(this, "Por favor, ingrese valores numéricos válidos en los campos correspondientes.");
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
     }//GEN-LAST:event_btn_altasActionPerformed
 
@@ -1169,14 +1215,17 @@ try {
 
     private void RB_Todos_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RB_Todos_CActionPerformed
         // TODO add your handling code here:
-        txt_numControl_C.setEditable(true);
-        txt_nombre_c.setEditable(true);
-        txt_primerAp_C.setEditable(true);
-        txt_SegAp_C.setEditable(true);
-        //Caja_ID_C.setEditable(true);
-        txt_Edad_C.setEditable(true);
-        txt_promedio_c.setEditable(true);
-        JCB_semestre_C.setEnabled(true);
+        txt_numControl_C.setVisible(true);
+        txt_nombre_c.setVisible(true);
+        txt_primerAp_C.setVisible(true);
+        txt_SegAp_C.setVisible(true);
+        //Caja_ID_C.setVisible(true);
+        txt_Edad_C.setVisible(true);
+        txt_promedio_c.setVisible(true);
+        JCB_semestre_C.setVisible(false);
+        JCB_Carrera_C.setVisible(true);
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
     }//GEN-LAST:event_RB_Todos_CActionPerformed
 
     private void txt_numControl_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_numControl_CActionPerformed
@@ -1184,14 +1233,19 @@ try {
     }//GEN-LAST:event_txt_numControl_CActionPerformed
 
     private void txt_numControl_CKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_numControl_CKeyReleased
-        BusquedaFiltro(jTable2, "Numero de Control", txt_numControl_C.getText());
+        BusquedaFiltro(jTable2, "NumeroControl", txt_numControl_C.getText().trim());
     }//GEN-LAST:event_txt_numControl_CKeyReleased
 
     private void txt_numControl_CKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_numControl_CKeyTyped
-        char car= evt.getKeyChar();
-        if(!(car>64&&car<91||car>96&&car<123||car==32)) {
-            evt.consume();
-        }
+         char c = evt.getKeyChar();
+    // Permitir solo dígitos
+    if (!Character.isDigit(c)) {
+        evt.consume();
+    }
+    // Limitar la longitud a 8 caracteres
+    if (txt_numControl_C.getText().length() >= 8) {
+        evt.consume();
+    }
     }//GEN-LAST:event_txt_numControl_CKeyTyped
 
     private void lbl_Numcontrol_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_Numcontrol_CActionPerformed
@@ -1199,120 +1253,118 @@ try {
 
         txt_numControl_C.setEditable(true);
         metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
-        txt_nombre_c.setEditable(false);
-        txt_primerAp_C.setEditable(false);
-        txt_promedio_c.setEditable(false);
-        //Caja_ID_C.setEditable(false);
-        txt_SegAp_C.setEditable(false);
-        JCB_semestre_C.setEnabled(false);
-        txt_Edad_C.setEditable(false);
+        txt_nombre_c.setVisible(false);
+        txt_primerAp_C.setVisible(false);
+        txt_promedio_c.setVisible(false);
+        txt_SegAp_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        JCB_Carrera_C.setVisible(false);
+        txt_Edad_C.setVisible(false);
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
         actualizarTablas(jTable2);
     }//GEN-LAST:event_lbl_Numcontrol_CActionPerformed
 
     private void lbl_Nom_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_Nom_CActionPerformed
         // TODO add your handling code here:
-
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
         txt_nombre_c.setEditable(true);
         metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
-        txt_numControl_C.setEditable(false);
-        txt_primerAp_C.setEditable(false);
-        txt_promedio_c.setEditable(false);
-        
-        txt_SegAp_C.setEditable(false);
-        JCB_semestre_C.setEnabled(false);
-        txt_Edad_C.setEditable(false);
+        txt_numControl_C.setVisible(false);
+        txt_primerAp_C.setVisible(false);
+        txt_promedio_c.setVisible(false);
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        txt_SegAp_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        txt_Edad_C.setVisible(false);
         actualizarTablas(jTable2);
     }//GEN-LAST:event_lbl_Nom_CActionPerformed
 
     private void lbl_primerAp_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_primerAp_CActionPerformed
         // TODO add your handling code here:
-
+lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
         txt_primerAp_C.setEditable(true);
         metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
-        txt_numControl_C.setEditable(false);
-        txt_nombre_c.setEditable(false);
-        txt_promedio_c.setEditable(false);
-        txt_SegAp_C.setEditable(false);
-        JCB_semestre_C.setEnabled(false);
-        txt_Edad_C.setEditable(false);
+        txt_numControl_C.setVisible(false);
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        txt_nombre_c.setVisible(false);
+        txt_promedio_c.setVisible(false);
+        txt_SegAp_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        txt_Edad_C.setVisible(false);
         actualizarTablas(jTable2);
     }//GEN-LAST:event_lbl_primerAp_CActionPerformed
 
     private void txt_primerAp_CKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_primerAp_CKeyReleased
-
+BusquedaFiltro(jTable2, "PrimerAp", txt_primerAp_C.getText());
     }//GEN-LAST:event_txt_primerAp_CKeyReleased
 
     private void lbl_carrera_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_carrera_CActionPerformed
 
         
         metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
-        txt_numControl_C.setEditable(false);
-        txt_nombre_c.setEditable(false);
-        txt_primerAp_C.setEditable(false);
-        txt_promedio_c.setEditable(false);
-        txt_SegAp_C.setEditable(false);
-        JCB_semestre_C.setEnabled(false);
-        txt_Edad_C.setEditable(false);
+        txt_numControl_C.setVisible(false);
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        txt_nombre_c.setVisible(false);
+        txt_primerAp_C.setVisible(false);
+        txt_promedio_c.setVisible(false);
+        txt_SegAp_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        JCB_Carrera_C.setVisible(true);
+        txt_Edad_C.setVisible(false);
         actualizarTablas(jTable2);
     }//GEN-LAST:event_lbl_carrera_CActionPerformed
-
-    private void lbl_semestre_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_semestre_CActionPerformed
-        // TODO add your handling code here:
-
-        JCB_semestre_C.setEnabled(true);
-        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
-        txt_numControl_C.setEditable(false);
-        txt_nombre_c.setEditable(false);
-        txt_primerAp_C.setEditable(false);
-        txt_promedio_c.setEditable(false);
-        
-        txt_SegAp_C.setEditable(false);
-        txt_Edad_C.setEditable(false);
-        actualizarTablas(jTable2);
-    }//GEN-LAST:event_lbl_semestre_CActionPerformed
-
-    private void JCB_semestre_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JCB_semestre_CActionPerformed
-
-    }//GEN-LAST:event_JCB_semestre_CActionPerformed
 
     private void lbl_edad_cActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_edad_cActionPerformed
         // TODO add your handling code here:
 
-        txt_Edad_C.setEditable(true);
+       
         metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
-        txt_numControl_C.setEditable(false);
-        txt_nombre_c.setEditable(false);
-        txt_primerAp_C.setEditable(false);
-        txt_promedio_c.setEditable(false);
-        txt_SegAp_C.setEditable(false);
-        JCB_semestre_C.setEnabled(false);
+        txt_numControl_C.setVisible(false);
+        txt_nombre_c.setVisible(false);
+        txt_primerAp_C.setVisible(false);
+        txt_promedio_c.setVisible(false);
+        txt_SegAp_C.setVisible(false);
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        JCB_Carrera_C.setVisible(false);
+        txt_Edad_C.setVisible(true);
         actualizarTablas(jTable2);
     }//GEN-LAST:event_lbl_edad_cActionPerformed
 
     private void lbl_SegundoAp_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_SegundoAp_CActionPerformed
         // TODO add your handling code here:
-
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
         txt_SegAp_C.setEditable(true);
         metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
-        txt_numControl_C.setEditable(false);
-        txt_nombre_c.setEditable(false);
-        txt_primerAp_C.setEditable(false);
-        txt_promedio_c.setEditable(false);
-        JCB_semestre_C.setEnabled(false);
-        txt_Edad_C.setEditable(false);
+        txt_numControl_C.setVisible(false);
+        txt_nombre_c.setVisible(false);
+        txt_primerAp_C.setVisible(false);
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        txt_promedio_c.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        txt_Edad_C.setVisible(false);
         actualizarTablas(jTable2);
     }//GEN-LAST:event_lbl_SegundoAp_CActionPerformed
 
     private void txt_SegAp_CKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_SegAp_CKeyReleased
-
+BusquedaFiltro(jTable2, "SegundoAp", txt_SegAp_C.getText());
     }//GEN-LAST:event_txt_SegAp_CKeyReleased
 
     private void txt_SegAp_CKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_SegAp_CKeyTyped
-        char caracter=evt.getKeyChar();
-        if(!(caracter>47&&caracter<58)) {
-            evt.consume();
-        }
-        if (txt_SegAp_C.getText().trim().length() == 10) {
+       
+         char car= evt.getKeyChar();
+        if(!(car>64&&car<91||car>96&&car<123||car==32)) {
             evt.consume();
         }
     }//GEN-LAST:event_txt_SegAp_CKeyTyped
@@ -1322,17 +1374,20 @@ try {
 
         txt_promedio_c.setEditable(true);
         metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
-        txt_numControl_C.setEditable(false);
-        txt_nombre_c.setEditable(false);
-        txt_primerAp_C.setEditable(false);
-        txt_SegAp_C.setEditable(false);
+        txt_numControl_C.setVisible(false);
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        txt_nombre_c.setVisible(false);
+        txt_primerAp_C.setVisible(false);
+        txt_SegAp_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
         JCB_semestre_C.setEnabled(false);
-        txt_Edad_C.setEditable(false);
+        txt_Edad_C.setVisible(false);
         actualizarTablas(jTable2);
     }//GEN-LAST:event_lbl_promedio_CActionPerformed
 
     private void txt_promedio_cKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_promedio_cKeyReleased
-
+BusquedaFiltro(jTable2, "Promedio", txt_promedio_c.getText().trim());
     }//GEN-LAST:event_txt_promedio_cKeyReleased
 
     private void txt_promedio_cKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_promedio_cKeyTyped
@@ -1369,7 +1424,7 @@ try {
 
     private void txt_Edad_CKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_Edad_CKeyReleased
         // TODO add your handling code here:
-        BusquedaFiltro(jTable2, "seguro_medico", txt_Edad_C.getText());
+        BusquedaFiltro(jTable2, "Edad", txt_Edad_C.getText());
     }//GEN-LAST:event_txt_Edad_CKeyReleased
 
     private void txt_Edad_CKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_Edad_CKeyTyped
@@ -1399,11 +1454,15 @@ try {
 
     private void JM_ConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JM_ConsultasActionPerformed
          Grafico.setEnabled(true);
-        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c,lbl_semestre_C, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
         txt_numControl_C.setEditable(false);
         txt_nombre_c.setEditable(false);
         txt_primerAp_C.setEditable(false);
         txt_promedio_c.setEditable(false);
+        lbl_semestre_C.setVisible(false);
+        JCB_semestre_C.setVisible(false);
+        
+        btn_buscar.setEnabled(true);
         
         txt_SegAp_C.setEditable(false);
         JCB_semestre_C.setEnabled(false);
@@ -1420,6 +1479,45 @@ try {
     private void txt_nombre_cActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_nombre_cActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_nombre_cActionPerformed
+
+    private void txt_primerAp_CKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_primerAp_CKeyTyped
+         char car= evt.getKeyChar();
+        if(!(car>64&&car<91||car>96&&car<123||car==32)) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_primerAp_CKeyTyped
+
+    private void lbl_semestre_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_semestre_CActionPerformed
+        // TODO add your handling code here:
+
+        JCB_semestre_C.setVisible(true);
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        txt_numControl_C.setVisible(false);
+        txt_nombre_c.setVisible(false);
+        txt_primerAp_C.setVisible(false);
+        txt_promedio_c.setVisible(false);
+        JCB_Carrera_C.setVisible(false);
+        txt_SegAp_C.setVisible(false);
+        txt_Edad_C.setVisible(false);
+        actualizarTablas(jTable2);
+
+    }//GEN-LAST:event_lbl_semestre_CActionPerformed
+
+    private void JCB_semestre_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JCB_semestre_CActionPerformed
+
+    }//GEN-LAST:event_JCB_semestre_CActionPerformed
+
+    private void GraficoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GraficoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_GraficoActionPerformed
+
+    private void vistaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vistaActionPerformed
+       actualizarTablasJOINS(jTable2);
+    }//GEN-LAST:event_vistaActionPerformed
+
+    private void reportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportesActionPerformed
+         f1.generarInforme(this);
+    }//GEN-LAST:event_reportesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1476,55 +1574,70 @@ try {
         }//foreach
     }// Metodo Desabilitar
     
-    public void BusquedaFiltro(JTable tabla, String campo, String filtro){
-      /*  try{
-            
-                String controlador="org.postgresql.Driver";
-                String URL = "jdbc:postgresql://localhost:5432/proyecto_clinica";
-                 String consulta = "SELECT * FROM paciente WHERE " + campo.toLowerCase() + "::text LIKE '" + filtro + "%' ORDER BY Idpaciente";
-        
-                ResultSetTableModel modeloTabla=null;
-                try {
-                    modeloTabla = new ResultSetTableModel(controlador,URL,consulta);
-                    }  catch (ClassNotFoundException e) {
-                         JOptionPane.showMessageDialog(getContentPane(), e);
-                        }
-                tabla.setModel(modeloTabla);
-            }
-              catch (SQLException e) {
-            JOptionPane.showMessageDialog(getContentPane(), e);
-        }*/
-    }
-    public void metodoMagicoParaRestablecerComponentes(JComponent ... compo){
-        for (JComponent x: compo) {
-            if(x instanceof JTextField){
-                ((JTextField)x).setText("");
-            }else if(x instanceof JComboBox){
-                ((JComboBox)x).setSelectedIndex(0);
-            }else if(x instanceof SpinnerModel){
-                ((SpinnerModel)x).setValue(0);
-            } else if (x instanceof JCheckBox) {
-                ((JCheckBox)x).setSelected(false);
-            }else if(x instanceof JRadioButton){
-                ((JRadioButton)x).setSelected(false);
-            }
+    
+    public void metodoMagicoParaRestablecerComponentes(JComponent... compo) {
+    for (JComponent x : compo) {
+        if (x instanceof JTextField) {
+            ((JTextField) x).setText("");
+            x.setVisible(true); // Mostrar el componente
+        } else if (x instanceof JComboBox) {
+            ((JComboBox<?>) x).setSelectedIndex(0);
+            x.setVisible(true); // Mostrar el componente
+        } else if (x instanceof JCheckBox) {
+            ((JCheckBox) x).setSelected(false);
+            x.setVisible(true); // Mostrar el componente
+        } else if (x instanceof JRadioButton) {
+            ((JRadioButton) x).setSelected(false);
+            x.setVisible(true); // Mostrar el componente
         }
-    }//metodoParaVaciado
-    public void actualizarTablas(JTable tabla) {
-    String controlador = "org.postgresql.Driver";
-    String URL = "jdbc:postgresql://localhost:5432/proyecto_tutorias"; // Incluye el nombre de la base de datos
-    String consulta = "SELECT * FROM public.alumno ORDER BY NumeroControl"; // Asegúrate de usar el esquema correcto
-
-    try {
-        ResultSetTableModel modeloTabla = new ResultSetTableModel(controlador, URL, consulta); // Crea el modelo una vez
-        tabla.setModel(modeloTabla); // Asigna el modelo a la tabla
-    } catch (ClassNotFoundException e) {
-        throw new RuntimeException("Error: No se encontró el controlador de PostgreSQL", e);
-    } catch (SQLException e) {
-        throw new RuntimeException("Error: Problema al ejecutar la consulta SQL", e);
     }
 }
-//Metodo Actualizar Tablas
+//metodoParaVaciado
+     public void BusquedaFiltro(JTable tabla, String campo, String filtro) {
+    try {
+        String consulta = "SELECT * FROM alumno WHERE " + campo.toLowerCase() + "::text LIKE '" + filtro + "%' ORDER BY NumeroControl";
+        ResultSetTableModel modeloTabla = new ResultSetTableModel("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/proyecto_tutorias", consulta);
+        tabla.setModel(modeloTabla);
+    } catch (SQLException e) {
+        e.printStackTrace(); // Esto imprimirá el error exacto en la consola.
+        JOptionPane.showMessageDialog(null, "Error en la consulta: " + e.getMessage());
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error al cargar el controlador: " + e.getMessage());
+    }
+}
+
+    
+    public void actualizarTablas(JTable tabla){
+        String controlador="org.postgresql.Driver";
+        String URL = "jdbc:postgresql://localhost:5432/proyecto_tutorias";
+        String consulta="SELECT * FROM alumno ORDER BY NumeroControl";
+        ResultSetTableModel modeloTabla=null;
+        try {
+            modeloTabla = new ResultSetTableModel(controlador,URL,consulta);
+        }  catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        tabla.setModel(modeloTabla);
+    }
+    
+    public void actualizarTablasJOINS(JTable tabla){
+        String controlador="org.postgresql.Driver";
+        String URL = "jdbc:postgresql://localhost:5432/proyecto_tutorias";
+        String consulta="SELECT * FROM NumeroControl";
+        ResultSetTableModel modeloTabla=null;
+        try {
+            modeloTabla = new ResultSetTableModel(controlador,URL,consulta);
+        }  catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        tabla.setModel(modeloTabla);
+    }
+   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JInternalFrame ABCC;
@@ -1551,12 +1664,11 @@ try {
     private javax.swing.JRadioButton RB_Todos_C;
     private javax.swing.JButton btn_altas;
     private javax.swing.JButton btn_bajas;
+    private javax.swing.JButton btn_buscar;
     private javax.swing.JButton btn_cambios;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1585,6 +1697,7 @@ try {
     private javax.swing.JLabel lbl_semestre;
     private javax.swing.JRadioButton lbl_semestre_C;
     private javax.swing.JLabel lbl_titulo;
+    private javax.swing.JMenuItem reportes;
     private javax.swing.JLabel titulo_Consultas;
     private javax.swing.JTextField txt_Edad_C;
     private javax.swing.JTextField txt_SegAp_C;
@@ -1598,5 +1711,6 @@ try {
     private javax.swing.JTextPane txt_promedio;
     private javax.swing.JTextField txt_promedio_c;
     private javax.swing.JTextPane txt_segundoAp;
+    private javax.swing.JMenuItem vista;
     // End of variables declaration//GEN-END:variables
 }
