@@ -20,6 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -53,14 +58,14 @@ public class Fachada {
         try {
             conexion.setAutoCommit(false);
             pstm = conexion.prepareStatement("UPDATE alumno SET Nombre = ?, PrimerAp = ?, SegundoAp = ?, Carrera = ?, Semestre = ?, Edad = ?, Promedio = ? WHERE NumeroControl = ?");
-pstm.setString(1, alum.getNombre());
-pstm.setString(2, alum.getPrimerAp());
-pstm.setString(3, alum.getSegundorAp());
-pstm.setString(4, alum.getCarrera());
-pstm.setInt(5, alum.getSemestre());
-pstm.setInt(6, alum.getEdad());
-pstm.setDouble(7, alum.getPromedio());
-pstm.setInt(8, alum.getNumeroControl());
+            pstm.setString(1, alum.getNombre());
+            pstm.setString(2, alum.getPrimerAp());
+            pstm.setString(3, alum.getSegundorAp());
+            pstm.setString(4, alum.getCarrera());
+            pstm.setInt(5, alum.getSemestre());
+            pstm.setInt(6, alum.getEdad());
+            pstm.setDouble(7, alum.getPromedio());
+            pstm.setInt(8, alum.getNumeroControl());
 
             pstm.executeUpdate();
             
@@ -296,87 +301,105 @@ pstm.setInt(8, alum.getNumeroControl());
     
       //====================================================================================================================
   
-   /* public static void generarInforme(JFrame parentFrame) {
-        try {
-           String reportPath = "C:\\Users\\JaspersoftWorkspace\\MyReports\\REPORTE_PACIENTE.jasper";
+   public static void generarInforme(JFrame parentFrame) {
+    try {
+        // Ruta del archivo del reporte Jasper
+        String reportPath = "C:\\Users\\anemn\\OneDrive\\Documentos\\NetBeansProjects\\ProyectoTBD\\src\\main\\java\\JASPERREPORT\\null.jasper"; 
 
-            JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(reportPath);
+        // Cargar el reporte
+        JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(reportPath);
 
-            String url = "jdbc:postgresql://localhost:5432/";
-            String user = "root";
-            String password = "itsj";
-            Connection connection = DriverManager.getConnection(url, user, password);
+        // Datos de conexión a la base de datos
+        String url = "jdbc:postgresql://localhost:5432/proyecto_tutorias";
+        String user = "postgres"; 
+        String password = "itsj"; 
+        Connection connection = DriverManager.getConnection(url, user, password);
 
-            Map<String, Object> parametros = new HashMap<>();
+        
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("titulo", "Reporte de Alumnos"); 
 
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, connection);
+        // Llenar el reporte con los datos
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, connection);
 
-            JFrame reportViewerFrame = new JFrame("Visor de Informes");
-            reportViewerFrame.setSize(800, 600);
+        // Crear el visor de informes
+        JFrame reportViewerFrame = new JFrame("Visor de Informes");
+        reportViewerFrame.setSize(800, 600);
 
-            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
-            reportViewerFrame.getContentPane().add(jasperViewer.getContentPane());
+        JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+        reportViewerFrame.getContentPane().add(jasperViewer.getContentPane());
 
-            reportViewerFrame.addWindowListener(new WindowAdapter() {
-               
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    try {
-                        connection.close();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-
-                    reportViewerFrame.dispose();
+        // Manejo del cierre del visor
+        reportViewerFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
-            });
+                reportViewerFrame.dispose();
+            }
+        });
 
-            reportViewerFrame.setVisible(true);
+        reportViewerFrame.setVisible(true);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(parentFrame, 
+            "Error al generar el informe: " + e.getMessage(), 
+            "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
         //====================================================================================================================
 
-   public String FachadaObtenerAlumnoCarrera(String carrera) {
-    Connection conexion = getConexion();
-    String informacionAlumnos = "";
+public String FachadaObtenerAlumnosPorCarrera(String carrera) {
+    StringBuilder informacionAlumnos = new StringBuilder();
+    String sql = "SELECT * FROM obtener_alumnos_por_carrera(?)";
 
-    try {
-        // Consulta para la función almacenada
-        String sql = "SELECT * FROM obtener_alumnos_por_carrera(?)";
-        PreparedStatement pstm = conexion.prepareStatement(sql);
-        pstm.setString(1, carrera);
+    // Obtener la conexión
+    try (Connection conexion = Conexion.getConexion()) {
 
-        // Ejecutar la consulta
-        ResultSet rs = pstm.executeQuery();
-        informacionAlumnos += "NOMBRE   |   APELLIDO   |   SEMESTRE   |   PROMEDIO\n";
-        while (rs.next()) {
-            String nombre = rs.getString("nombre");
-            String apellido = rs.getString("apellido");
-            int semestre = rs.getInt("semestre");
-            double promedio = rs.getDouble("promedio");
+        // Verificar si la conexión es válida
+        if (conexion == null || conexion.isClosed()) {
+            System.err.println("Error: Conexión no establecida.");
+            return "Error: Conexión no establecida.";
+        }
 
-            informacionAlumnos += "- " + nombre + "   " + apellido + "         " + semestre + "          " + promedio + "\n";
+        // Preparar la consulta
+        try (PreparedStatement pstm = conexion.prepareStatement(sql)) {
+            pstm.setString(1, carrera);
+
+            // Ejecutar la consulta y procesar resultados
+            try (ResultSet rs = pstm.executeQuery()) {
+                informacionAlumnos.append("NUM. CONTROL \tNOMBRE \t\tAPELLIDOS \t\tCARRERA \t\tSEMESTRE \n");
+                informacionAlumnos.append("-----------------------------------------------------------------------------\n");
+
+                while (rs.next()) {
+                    informacionAlumnos.append(rs.getInt("numerocontrol"))
+                                      .append("\t ")
+                                      .append(rs.getString("nombre"))
+                                      .append("\t\t ")
+                                      .append(rs.getString("primerap"))
+                                      .append(" ")
+                                      .append(rs.getString("segundoap"))
+                                      .append("\t\t ")
+                                      .append(rs.getString("carrera"))
+                                      .append("\t\t ")
+                                      .append(rs.getInt("semestre"))
+                                      .append("\n");
+                }
+            }
         }
     } catch (SQLException e) {
-        System.out.println("Error al llamar a la función obtener_alumnos_por_carrera");
-        e.printStackTrace();
+        System.err.println("Error al obtener alumnos por carrera: " + e.getMessage());
+        informacionAlumnos.append("Error al obtener alumnos por carrera.");
     }
-    return informacionAlumnos;
+
+    return informacionAlumnos.toString();
 }
 
 
-    
-    public static void main(String[] args) {
-    Connection conexion = Conexion.getConexion();
-    if (conexion != null) {
-        System.out.println("¡Conexión exitosa!");
-    } else {
-        System.out.println("No se pudo conectar a la base de datos.");
-    }
-}
 
         //====================================================================================================================
 
@@ -397,9 +420,52 @@ pstm.setInt(8, alum.getNumeroControl());
 
     JOptionPane.showMessageDialog(null, mensajeUsuario);
 }
+/*public String FachadaObtenerAlumnosPorCarrera(String carrera) {
+    Connection conexion = getConexion(); 
+    String informacionAlumnos = "";
+
+    try {
+        
+        pstm = conexion.prepareStatement("SELECT * FROM obtener_alumnos_por_carrera(?) AS Alumnos_Carrera");
+        pstm.setString(1, carrera); // Establecer el parámetro de la carrera
+        ResultSet rs = pstm.executeQuery();
+
+        // Encabezado de los datos
+        informacionAlumnos += "NUM. CONTROL\tNOMBRE\t\tAPELLIDOS\t\tCARRERA\t\tSEMESTRE\n";
+        informacionAlumnos += "-----------------------------------------------------------------------------\n";
+
+        // Recorrer el resultado de la consulta
+        while (rs.next()) {
+            String numeroControl = rs.getString("numero_control");  
+            String nombre = rs.getString("nombre");                
+            String apellidos = rs.getString("apellidos");          
+            String carreraDB = rs.getString("carrera");           
+            int semestre = rs.getInt("semestre");              
+
+            informacionAlumnos += numeroControl + "\t" 
+                                + nombre + "\t\t" 
+                                + apellidos + "\t\t" 
+                                + carreraDB + "\t\t" 
+                                + semestre + "\n";
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al llamar a la función obtener_alumnos_por_carrera");
+        e.printStackTrace();
+    } finally {
+        try {
+            if (conexion != null) {
+                conexion.close(); // Cerrar la conexión
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    return informacionAlumnos; // Devolver la información recopilada
+}
 
 
-
+*/
 }
 
 
