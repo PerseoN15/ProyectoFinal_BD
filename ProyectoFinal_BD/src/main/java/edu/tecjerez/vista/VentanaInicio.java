@@ -8,6 +8,8 @@ import Conexion.Conexion;
 import Controlador.AlumnoDAO;
 import MODELO.Memento;
 import MODELO.alumno;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -32,6 +34,13 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  *
@@ -158,6 +167,11 @@ public class VentanaInicio extends javax.swing.JFrame {
 
         Boton_Memento.setBackground(new java.awt.Color(255, 153, 0));
         Boton_Memento.setText("CANCELAR");
+        Boton_Memento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Boton_MementoActionPerformed(evt);
+            }
+        });
 
         btn_altas.setBackground(new java.awt.Color(153, 255, 153));
         btn_altas.setText("Dar de Alta");
@@ -850,16 +864,22 @@ try {
                 JCB_Semestre,
                 txt_edad);
         Boton_Memento.setEnabled(true);
-        Boton_Memento.setEnabled(false);
+        Boton_Memento.setEnabled(true);
         
         
         
     }//GEN-LAST:event_JM_AltasActionPerformed
 
     private void JM_BajasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JM_BajasActionPerformed
- Grafico.setEnabled(true);
+        JCB_Carrera.setVisible(false);
+        JCB_Semestre.setVisible(false);
+        Grafico.setEnabled(true);
+        JCB_Carrera.setVisible(false);
+        JCB_Semestre.setVisible(false);
         //FrameConsultas.setVisible(false);
         ABCC.setVisible(true);
+        JCB_Carrera.setVisible(false);
+        JCB_Semestre.setVisible(false);
         //Fondo.setBounds(0, 0, 710, 80);
         Fondo.setBackground(new java.awt.Color(204, 72, 12));
         lbl_titulo.setBounds(100, 10, 160, 70);
@@ -886,8 +906,9 @@ try {
                 JCB_Carrera,
                 JCB_Semestre,
                 txt_edad);
-        Boton_Memento.setEnabled(true);
-          Boton_Memento.setEnabled(false);    }//GEN-LAST:event_JM_BajasActionPerformed
+       Boton_Memento.setEnabled(true);
+          
+              }//GEN-LAST:event_JM_BajasActionPerformed
 
     private void JM_CambiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JM_CambiosActionPerformed
         Grafico.setEnabled(true);
@@ -917,7 +938,7 @@ try {
                 JCB_Carrera,
                 JCB_Semestre,
                 txt_edad);
-        Boton_Memento.setEnabled(true);
+        Boton_Memento.setEnabled(false);
         Boton_Memento.setEnabled(false);
         
         
@@ -966,20 +987,18 @@ try {
 
     private void JM_FuncionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JM_FuncionActionPerformed
         
-       /* 
-        String valor = JOptionPane.showInputDialog("Ingresa la ciudad").toUpperCase();
-        if(valor==null || valor.trim().isEmpty()|| f1.FachadaObtenerPacienteRegion(valor)== null){
-            JOptionPane.showMessageDialog(null, "Error, no hay clinicas en esa ciudad");
+      String valor = JOptionPane.showInputDialog("Ingresa la Carrera").toUpperCase();
+        if(valor==null || valor.trim().isEmpty()|| f1.FachadaObtenerAlumnosPorCarrera(valor)== null){
+            JOptionPane.showMessageDialog(null, "Error, Alumnos");
             
         }else{
             try {
-                JOptionPane.showMessageDialog(null, f1.FachadaObtenerPacienteRegion(valor)); 
+                JOptionPane.showMessageDialog(null, f1.FachadaObtenerAlumnosPorCarrera(valor)); 
             } catch (Exception e) {
                 e.printStackTrace();
             }
            
         }
-      */  
     }//GEN-LAST:event_JM_FuncionActionPerformed
 
     private void btn_bajasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_bajasActionPerformed
@@ -1508,7 +1527,90 @@ BusquedaFiltro(jTable2, "Promedio", txt_promedio_c.getText().trim());
     }//GEN-LAST:event_JCB_semestre_CActionPerformed
 
     private void GraficoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GraficoActionPerformed
-        // TODO add your handling code here:
+
+    try {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (int i = 0; i < jTable1.getRowCount(); i++) {
+            Object carreraObj = jTable1.getValueAt(i, 3);
+            if (carreraObj != null) {
+                String carrera = carreraObj.toString().trim();
+                if (!carrera.isEmpty()) {
+                    Number currentValue = dataset.getValue("Alumnos", carrera);
+                    if (currentValue != null) {
+                        dataset.setValue(currentValue.intValue() + 1, "Alumnos", carrera);
+                    } else {
+                        dataset.addValue(1, "Alumnos", carrera);
+                    }
+                }
+            }
+        }
+
+        JFreeChart chart = ChartFactory.createBarChart(
+            "Cantidad de Alumnos por Carrera",
+            "Carrera",
+            "Cantidad",
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            true,
+            false
+        );
+
+        CategoryPlot plot = chart.getCategoryPlot();
+        BarRenderer renderer = (BarRenderer) plot.getRenderer();
+        renderer.setSeriesPaint(0, Color.ORANGE);
+
+        ChartPanel chartPanel = new ChartPanel(chart);
+        JFrame frame = new JFrame("Gráfico de Alumnos por Carrera");
+        frame.setLayout(new BorderLayout());
+        frame.add(chartPanel, BorderLayout.CENTER);
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Ocurrió un error al generar el gráfico: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+
+        
+        /* try {
+        if (jTable1.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "No hay datos disponibles en la tabla para generar el gráfico.");
+            return;
+        }
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (int i = 0; i < jTable1.getRowCount(); i++) {
+            Object carreraObj = jTable1.getValueAt(i, 5); 
+            if (carreraObj != null) {
+                String carrera = carreraObj.toString();
+                Number count = dataset.getValue("Alumnos", carrera);
+                int newValue = count == null ? 1 : count.intValue() + 1;
+                dataset.setValue(newValue, "Alumnos", carrera);
+            }
+        }
+
+        JFreeChart chart = ChartFactory.createBarChart(
+            "Cantidad de Alumnos por Carrera", "Carrera", "Cantidad", dataset,
+            PlotOrientation.VERTICAL, true, true, false
+        );
+
+        ChartPanel chartPanel = new ChartPanel(chart);
+        JFrame frame = new JFrame("Gráfico de Carreras");
+        frame.setLayout(new BorderLayout());
+        frame.add(chartPanel, BorderLayout.CENTER);
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al generar el gráfico: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }*/
     }//GEN-LAST:event_GraficoActionPerformed
 
     private void vistaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vistaActionPerformed
@@ -1518,6 +1620,60 @@ BusquedaFiltro(jTable2, "Promedio", txt_promedio_c.getText().trim());
     private void reportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportesActionPerformed
          f1.generarInforme(this);
     }//GEN-LAST:event_reportesActionPerformed
+
+    private void Boton_MementoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Boton_MementoActionPerformed
+       if (lbl_titulo.getText().equals("ALTAS")) {
+    int opcion = JOptionPane.showConfirmDialog(this, "¿Quiere deshacer el alta del alumno?", "Deshacer Alta", JOptionPane.YES_NO_OPTION);
+
+    if (opcion == JOptionPane.YES_OPTION) {
+        if (ultimomemento != null) {
+            alumno estadoAnterior = ultimomemento.getEstado(); 
+            f1.FachadaEliminarAlumno(String.valueOf(estadoAnterior.getNumeroControl())); 
+            Boton_Memento.setEnabled(false);
+            actualizarTablas(jTable1); 
+        }
+    }
+    //======================================================================================================================================================
+} else if (lbl_titulo.getText().equals("BAJAS")) {
+    int opcion = JOptionPane.showConfirmDialog(this, "¿Desea recuperar el alumno eliminado?", "Deshacer Eliminación", JOptionPane.YES_NO_OPTION);
+
+    if (opcion == JOptionPane.YES_OPTION) {
+        if (ultimomemento != null) {
+            alumno estadoAnterior = ultimomemento.getEstado();
+            
+            if (f1.FachadaAgregarAlumno(estadoAnterior)) {
+                System.out.println("Alumno recuperado: " + estadoAnterior.getNombre());
+                actualizarTablas(jTable1); // Actualizar tabla tras la recuperación
+            } else {
+                System.out.println("Error al recuperar el alumno.");
+                JOptionPane.showMessageDialog(this, "No se pudo recuperar el alumno.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            
+            // f1.FachadaEliminarAlumno2(String.valueOf(estadoAnterior.getNombre()));
+
+            Boton_Memento.setEnabled(false);
+        } else {
+            System.out.println("No hay memento para recuperar.");
+        }
+    }
+}
+//===============================================================================================================================================================
+
+else if (lbl_titulo.getText().equals("CAMBIOS")) {
+    int opcion = JOptionPane.showConfirmDialog(this, "¿Desea deshacer los cambios del alumno?", "Deshacer Cambios", JOptionPane.YES_NO_OPTION);
+
+    if (opcion == JOptionPane.YES_OPTION) {
+        if (ultimomemento != null) {
+            alumno estadoAnterior = ultimomemento.getEstado(); // Cambiado a "alumno"
+            f1.FachadaActualizarAlumnos(estadoAnterior); // Método para actualizar los datos del alumno
+            Boton_Memento.setEnabled(false);
+            actualizarTablas(jTable1); // Actualizar tabla tras deshacer los cambios
+        }
+    }
+}
+
+    }//GEN-LAST:event_Boton_MementoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1626,15 +1782,23 @@ BusquedaFiltro(jTable2, "Promedio", txt_promedio_c.getText().trim());
     public void actualizarTablasJOINS(JTable tabla){
         String controlador="org.postgresql.Driver";
         String URL = "jdbc:postgresql://localhost:5432/proyecto_tutorias";
-        String consulta="SELECT * FROM NumeroControl";
+        String consulta = """
+        SELECT a.numerocontrol, a.nombre, a.primerap, a.segundoap, a.carrera, a.semestre
+        FROM alumno a
+        ORDER BY a.numerocontrol
+    """;
         ResultSetTableModel modeloTabla=null;
         try {
             modeloTabla = new ResultSetTableModel(controlador,URL,consulta);
-        }  catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (ClassNotFoundException e) {
+        System.err.println("Error: Controlador no encontrado.");
+        e.printStackTrace();
+        return;
+    } catch (SQLException e) {
+        System.err.println("Error al ejecutar la consulta en actualizarTablasJOINS.");
+        e.printStackTrace();
+        return;
+    }
         tabla.setModel(modeloTabla);
     }
    
