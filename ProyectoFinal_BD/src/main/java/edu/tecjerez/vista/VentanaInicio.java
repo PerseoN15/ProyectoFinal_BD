@@ -35,6 +35,16 @@ public class VentanaInicio extends javax.swing.JFrame {
     
     public VentanaInicio() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        GrupoBotones.add(lbl_Numcontrol_C);
+        GrupoBotones.add(lbl_Nom_C);
+        GrupoBotones.add(lbl_primerAp_C);
+        GrupoBotones.add(lbl_SegundoAp_C);
+        GrupoBotones.add(lbl_carrera_C);
+        GrupoBotones.add(lbl_semestre_C);
+        GrupoBotones.add(lbl_edad_c);
+        GrupoBotones.add(lbl_promedio_C);
+        GrupoBotones.add(RB_Todos_C);
     }
 
     /**
@@ -46,6 +56,7 @@ public class VentanaInicio extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        GrupoBotones = new javax.swing.ButtonGroup();
         BG = new javax.swing.JPanel();
         ABCC = new javax.swing.JInternalFrame();
         Fondo = new javax.swing.JPanel();
@@ -79,6 +90,31 @@ public class VentanaInicio extends javax.swing.JFrame {
         lbl_promedio = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
         txt_promedio = new javax.swing.JTextPane();
+        FrameConsultas = new javax.swing.JInternalFrame();
+        PanelConsultas = new javax.swing.JPanel();
+        RB_Todos_C = new javax.swing.JRadioButton();
+        titulo_Consultas = new javax.swing.JLabel();
+        Icono_Consultas = new javax.swing.JLabel();
+        Fondo_Consultas = new javax.swing.JLabel();
+        Fondo_titulo_Consultas = new javax.swing.JLabel();
+        txt_numControl_C = new javax.swing.JTextField();
+        lbl_Numcontrol_C = new javax.swing.JRadioButton();
+        lbl_Nom_C = new javax.swing.JRadioButton();
+        lbl_primerAp_C = new javax.swing.JRadioButton();
+        txt_primerAp_C = new javax.swing.JTextField();
+        lbl_carrera_C = new javax.swing.JRadioButton();
+        lbl_semestre_C = new javax.swing.JRadioButton();
+        JCB_semestre_C = new javax.swing.JComboBox<>();
+        lbl_edad_c = new javax.swing.JRadioButton();
+        lbl_SegundoAp_C = new javax.swing.JRadioButton();
+        txt_SegAp_C = new javax.swing.JTextField();
+        lbl_promedio_C = new javax.swing.JRadioButton();
+        txt_promedio_c = new javax.swing.JTextField();
+        txt_Edad_C = new javax.swing.JTextField();
+        txt_nombre_c = new javax.swing.JTextField();
+        JCB_Carrera_C = new javax.swing.JComboBox<>();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         JM_Alumnos = new javax.swing.JMenu();
         JM_Altas = new javax.swing.JMenuItem();
@@ -358,6 +394,247 @@ public class VentanaInicio extends javax.swing.JFrame {
 
         BG.add(ABCC, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 750, 550));
 
+        FrameConsultas.setBackground(new java.awt.Color(204, 204, 255));
+        FrameConsultas.setClosable(true);
+        FrameConsultas.setCursor(new java.awt.Cursor(java.awt.Cursor.N_RESIZE_CURSOR));
+        FrameConsultas.setVisible(false);
+        FrameConsultas.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        PanelConsultas.setBackground(new java.awt.Color(200, 182, 206));
+        PanelConsultas.setLayout(null);
+
+        RB_Todos_C.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        RB_Todos_C.setText("TODOS");
+        RB_Todos_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RB_Todos_CActionPerformed(evt);
+            }
+        });
+        PanelConsultas.add(RB_Todos_C);
+        RB_Todos_C.setBounds(450, 30, 110, 27);
+
+        titulo_Consultas.setFont(new java.awt.Font("Segoe UI Semibold", 1, 24)); // NOI18N
+        titulo_Consultas.setText("CONSULTAS");
+        PanelConsultas.add(titulo_Consultas);
+        titulo_Consultas.setBounds(100, 20, 160, 40);
+        PanelConsultas.add(Icono_Consultas);
+        Icono_Consultas.setBounds(0, -10, 0, 0);
+
+        Fondo_Consultas.setBackground(new java.awt.Color(107, 66, 193));
+        Fondo_Consultas.setOpaque(true);
+        PanelConsultas.add(Fondo_Consultas);
+        Fondo_Consultas.setBounds(0, 0, 0, 0);
+
+        Fondo_titulo_Consultas.setBackground(new java.awt.Color(165, 66, 170));
+        Fondo_titulo_Consultas.setOpaque(true);
+        PanelConsultas.add(Fondo_titulo_Consultas);
+        Fondo_titulo_Consultas.setBounds(0, 0, 710, 80);
+
+        txt_numControl_C.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txt_numControl_C.setPreferredSize(new java.awt.Dimension(62, 20));
+        txt_numControl_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_numControl_CActionPerformed(evt);
+            }
+        });
+        txt_numControl_C.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_numControl_CKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_numControl_CKeyTyped(evt);
+            }
+        });
+        PanelConsultas.add(txt_numControl_C);
+        txt_numControl_C.setBounds(220, 100, 160, 30);
+
+        lbl_Numcontrol_C.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        lbl_Numcontrol_C.setText("Numero De Control");
+        lbl_Numcontrol_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lbl_Numcontrol_CActionPerformed(evt);
+            }
+        });
+        PanelConsultas.add(lbl_Numcontrol_C);
+        lbl_Numcontrol_C.setBounds(0, 100, 210, 27);
+
+        lbl_Nom_C.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        lbl_Nom_C.setText("Nombre");
+        lbl_Nom_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lbl_Nom_CActionPerformed(evt);
+            }
+        });
+        PanelConsultas.add(lbl_Nom_C);
+        lbl_Nom_C.setBounds(0, 150, 120, 27);
+
+        lbl_primerAp_C.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        lbl_primerAp_C.setText("Primer Apellido");
+        lbl_primerAp_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lbl_primerAp_CActionPerformed(evt);
+            }
+        });
+        PanelConsultas.add(lbl_primerAp_C);
+        lbl_primerAp_C.setBounds(0, 200, 160, 27);
+
+        txt_primerAp_C.setMinimumSize(new java.awt.Dimension(62, 20));
+        txt_primerAp_C.setPreferredSize(new java.awt.Dimension(62, 20));
+        txt_primerAp_C.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_primerAp_CKeyReleased(evt);
+            }
+        });
+        PanelConsultas.add(txt_primerAp_C);
+        txt_primerAp_C.setBounds(220, 200, 160, 30);
+
+        lbl_carrera_C.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        lbl_carrera_C.setText("Carrera");
+        lbl_carrera_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lbl_carrera_CActionPerformed(evt);
+            }
+        });
+        PanelConsultas.add(lbl_carrera_C);
+        lbl_carrera_C.setBounds(400, 100, 110, 27);
+
+        lbl_semestre_C.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        lbl_semestre_C.setText("Semestre");
+        lbl_semestre_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lbl_semestre_CActionPerformed(evt);
+            }
+        });
+        PanelConsultas.add(lbl_semestre_C);
+        lbl_semestre_C.setBounds(400, 150, 130, 27);
+
+        JCB_semestre_C.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleciona ", "1", "2", "3", "4", "5", "6", "7", "8", "9" }));
+        JCB_semestre_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JCB_semestre_CActionPerformed(evt);
+            }
+        });
+        PanelConsultas.add(JCB_semestre_C);
+        JCB_semestre_C.setBounds(550, 150, 110, 30);
+
+        lbl_edad_c.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        lbl_edad_c.setText("Edad");
+        lbl_edad_c.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lbl_edad_cActionPerformed(evt);
+            }
+        });
+        PanelConsultas.add(lbl_edad_c);
+        lbl_edad_c.setBounds(400, 200, 100, 27);
+
+        lbl_SegundoAp_C.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        lbl_SegundoAp_C.setText("Segundo Apellido");
+        lbl_SegundoAp_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lbl_SegundoAp_CActionPerformed(evt);
+            }
+        });
+        PanelConsultas.add(lbl_SegundoAp_C);
+        lbl_SegundoAp_C.setBounds(0, 250, 190, 27);
+
+        txt_SegAp_C.setMinimumSize(new java.awt.Dimension(62, 20));
+        txt_SegAp_C.setPreferredSize(new java.awt.Dimension(62, 20));
+        txt_SegAp_C.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_SegAp_CKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_SegAp_CKeyTyped(evt);
+            }
+        });
+        PanelConsultas.add(txt_SegAp_C);
+        txt_SegAp_C.setBounds(220, 250, 160, 30);
+
+        lbl_promedio_C.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        lbl_promedio_C.setText("Promedio");
+        lbl_promedio_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lbl_promedio_CActionPerformed(evt);
+            }
+        });
+        PanelConsultas.add(lbl_promedio_C);
+        lbl_promedio_C.setBounds(400, 250, 120, 27);
+
+        txt_promedio_c.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_promedio_cKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_promedio_cKeyTyped(evt);
+            }
+        });
+        PanelConsultas.add(txt_promedio_c);
+        txt_promedio_c.setBounds(550, 250, 110, 30);
+
+        txt_Edad_C.setMinimumSize(new java.awt.Dimension(62, 20));
+        txt_Edad_C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_Edad_CActionPerformed(evt);
+            }
+        });
+        txt_Edad_C.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_Edad_CKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_Edad_CKeyTyped(evt);
+            }
+        });
+        PanelConsultas.add(txt_Edad_C);
+        txt_Edad_C.setBounds(550, 200, 110, 30);
+
+        txt_nombre_c.setPreferredSize(new java.awt.Dimension(62, 20));
+        txt_nombre_c.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_nombre_cActionPerformed(evt);
+            }
+        });
+        txt_nombre_c.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_nombre_cKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_nombre_cKeyTyped(evt);
+            }
+        });
+        PanelConsultas.add(txt_nombre_c);
+        txt_nombre_c.setBounds(220, 150, 160, 30);
+
+        JCB_Carrera_C.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleciona", "ISC", "IM", "IAA", "LA", "LCP" }));
+        PanelConsultas.add(JCB_Carrera_C);
+        JCB_Carrera_C.setBounds(550, 100, 110, 30);
+
+        jScrollPane8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jScrollPane8MouseReleased(evt);
+            }
+        });
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Numero de Control", "Nombre", "Primer Apellido", "Segundo Apellido", "Carrera", "Semestre", "Edad", "Promedio"
+            }
+        ));
+        jScrollPane8.setViewportView(jTable2);
+
+        PanelConsultas.add(jScrollPane8);
+        jScrollPane8.setBounds(0, 290, 710, 260);
+
+        FrameConsultas.getContentPane().add(PanelConsultas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 723, 544));
+
+        BG.add(FrameConsultas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 720, 580));
+
         JM_Alumnos.setText("Alumnos");
 
         JM_Altas.setText("Altas");
@@ -385,6 +662,11 @@ public class VentanaInicio extends javax.swing.JFrame {
         JM_Alumnos.add(JM_Cambios);
 
         JM_Consultas.setText("Consultas");
+        JM_Consultas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JM_ConsultasActionPerformed(evt);
+            }
+        });
         JM_Alumnos.add(JM_Consultas);
 
         jMenuBar1.add(JM_Alumnos);
@@ -857,27 +1139,19 @@ try {
 
     private void txt_promedioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_promedioKeyTyped
        char c = evt.getKeyChar();
-    String text = txt_promedio.getText();
-
-    // Permitir solo números, un punto decimal, y verificar longitud
+        String text = txt_promedio.getText();
     if (!Character.isDigit(c) && c != '.') {
         evt.consume();
         return;
     }
-
-    // Evitar más de un punto decimal
     if (c == '.' && text.contains(".")) {
         evt.consume();
         return;
     }
-
-    // Validar que los decimales no sean más de dos
     if (text.contains(".") && text.substring(text.indexOf(".") + 1).length() >= 2 && c != KeyEvent.VK_BACK_SPACE) {
         evt.consume();
         return;
     }
-
-    // Validar rango entre 1 y 100
     try {
         String newText = c == '.' ? text + c : text + (c == KeyEvent.VK_BACK_SPACE ? "" : String.valueOf(c));
         if (!newText.isEmpty() && !newText.equals(".")) {
@@ -892,6 +1166,260 @@ try {
 
 
     }//GEN-LAST:event_txt_promedioKeyTyped
+
+    private void RB_Todos_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RB_Todos_CActionPerformed
+        // TODO add your handling code here:
+        txt_numControl_C.setEditable(true);
+        txt_nombre_c.setEditable(true);
+        txt_primerAp_C.setEditable(true);
+        txt_SegAp_C.setEditable(true);
+        //Caja_ID_C.setEditable(true);
+        txt_Edad_C.setEditable(true);
+        txt_promedio_c.setEditable(true);
+        JCB_semestre_C.setEnabled(true);
+    }//GEN-LAST:event_RB_Todos_CActionPerformed
+
+    private void txt_numControl_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_numControl_CActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_numControl_CActionPerformed
+
+    private void txt_numControl_CKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_numControl_CKeyReleased
+        BusquedaFiltro(jTable2, "Numero de Control", txt_numControl_C.getText());
+    }//GEN-LAST:event_txt_numControl_CKeyReleased
+
+    private void txt_numControl_CKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_numControl_CKeyTyped
+        char car= evt.getKeyChar();
+        if(!(car>64&&car<91||car>96&&car<123||car==32)) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_numControl_CKeyTyped
+
+    private void lbl_Numcontrol_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_Numcontrol_CActionPerformed
+        // TODO add your handling code here:
+
+        txt_numControl_C.setEditable(true);
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        txt_nombre_c.setEditable(false);
+        txt_primerAp_C.setEditable(false);
+        txt_promedio_c.setEditable(false);
+        //Caja_ID_C.setEditable(false);
+        txt_SegAp_C.setEditable(false);
+        JCB_semestre_C.setEnabled(false);
+        txt_Edad_C.setEditable(false);
+        actualizarTablas(jTable2);
+    }//GEN-LAST:event_lbl_Numcontrol_CActionPerformed
+
+    private void lbl_Nom_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_Nom_CActionPerformed
+        // TODO add your handling code here:
+
+        txt_nombre_c.setEditable(true);
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        txt_numControl_C.setEditable(false);
+        txt_primerAp_C.setEditable(false);
+        txt_promedio_c.setEditable(false);
+        
+        txt_SegAp_C.setEditable(false);
+        JCB_semestre_C.setEnabled(false);
+        txt_Edad_C.setEditable(false);
+        actualizarTablas(jTable2);
+    }//GEN-LAST:event_lbl_Nom_CActionPerformed
+
+    private void lbl_primerAp_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_primerAp_CActionPerformed
+        // TODO add your handling code here:
+
+        txt_primerAp_C.setEditable(true);
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        txt_numControl_C.setEditable(false);
+        txt_nombre_c.setEditable(false);
+        txt_promedio_c.setEditable(false);
+        txt_SegAp_C.setEditable(false);
+        JCB_semestre_C.setEnabled(false);
+        txt_Edad_C.setEditable(false);
+        actualizarTablas(jTable2);
+    }//GEN-LAST:event_lbl_primerAp_CActionPerformed
+
+    private void txt_primerAp_CKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_primerAp_CKeyReleased
+
+    }//GEN-LAST:event_txt_primerAp_CKeyReleased
+
+    private void lbl_carrera_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_carrera_CActionPerformed
+
+        
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        txt_numControl_C.setEditable(false);
+        txt_nombre_c.setEditable(false);
+        txt_primerAp_C.setEditable(false);
+        txt_promedio_c.setEditable(false);
+        txt_SegAp_C.setEditable(false);
+        JCB_semestre_C.setEnabled(false);
+        txt_Edad_C.setEditable(false);
+        actualizarTablas(jTable2);
+    }//GEN-LAST:event_lbl_carrera_CActionPerformed
+
+    private void lbl_semestre_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_semestre_CActionPerformed
+        // TODO add your handling code here:
+
+        JCB_semestre_C.setEnabled(true);
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        txt_numControl_C.setEditable(false);
+        txt_nombre_c.setEditable(false);
+        txt_primerAp_C.setEditable(false);
+        txt_promedio_c.setEditable(false);
+        
+        txt_SegAp_C.setEditable(false);
+        txt_Edad_C.setEditable(false);
+        actualizarTablas(jTable2);
+    }//GEN-LAST:event_lbl_semestre_CActionPerformed
+
+    private void JCB_semestre_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JCB_semestre_CActionPerformed
+
+    }//GEN-LAST:event_JCB_semestre_CActionPerformed
+
+    private void lbl_edad_cActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_edad_cActionPerformed
+        // TODO add your handling code here:
+
+        txt_Edad_C.setEditable(true);
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        txt_numControl_C.setEditable(false);
+        txt_nombre_c.setEditable(false);
+        txt_primerAp_C.setEditable(false);
+        txt_promedio_c.setEditable(false);
+        txt_SegAp_C.setEditable(false);
+        JCB_semestre_C.setEnabled(false);
+        actualizarTablas(jTable2);
+    }//GEN-LAST:event_lbl_edad_cActionPerformed
+
+    private void lbl_SegundoAp_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_SegundoAp_CActionPerformed
+        // TODO add your handling code here:
+
+        txt_SegAp_C.setEditable(true);
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        txt_numControl_C.setEditable(false);
+        txt_nombre_c.setEditable(false);
+        txt_primerAp_C.setEditable(false);
+        txt_promedio_c.setEditable(false);
+        JCB_semestre_C.setEnabled(false);
+        txt_Edad_C.setEditable(false);
+        actualizarTablas(jTable2);
+    }//GEN-LAST:event_lbl_SegundoAp_CActionPerformed
+
+    private void txt_SegAp_CKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_SegAp_CKeyReleased
+
+    }//GEN-LAST:event_txt_SegAp_CKeyReleased
+
+    private void txt_SegAp_CKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_SegAp_CKeyTyped
+        char caracter=evt.getKeyChar();
+        if(!(caracter>47&&caracter<58)) {
+            evt.consume();
+        }
+        if (txt_SegAp_C.getText().trim().length() == 10) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_SegAp_CKeyTyped
+
+    private void lbl_promedio_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_promedio_CActionPerformed
+        // TODO add your handling code here:
+
+        txt_promedio_c.setEditable(true);
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        txt_numControl_C.setEditable(false);
+        txt_nombre_c.setEditable(false);
+        txt_primerAp_C.setEditable(false);
+        txt_SegAp_C.setEditable(false);
+        JCB_semestre_C.setEnabled(false);
+        txt_Edad_C.setEditable(false);
+        actualizarTablas(jTable2);
+    }//GEN-LAST:event_lbl_promedio_CActionPerformed
+
+    private void txt_promedio_cKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_promedio_cKeyReleased
+
+    }//GEN-LAST:event_txt_promedio_cKeyReleased
+
+    private void txt_promedio_cKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_promedio_cKeyTyped
+          char c = evt.getKeyChar();
+        String text = txt_promedio.getText();
+    if (!Character.isDigit(c) && c != '.') {
+        evt.consume();
+        return;
+    }
+    if (c == '.' && text.contains(".")) {
+        evt.consume();
+        return;
+    }
+    if (text.contains(".") && text.substring(text.indexOf(".") + 1).length() >= 2 && c != KeyEvent.VK_BACK_SPACE) {
+        evt.consume();
+        return;
+    }
+    try {
+        String newText = c == '.' ? text + c : text + (c == KeyEvent.VK_BACK_SPACE ? "" : String.valueOf(c));
+        if (!newText.isEmpty() && !newText.equals(".")) {
+            double value = Double.parseDouble(newText);
+            if (value < 1 || value > 100) {
+                evt.consume();
+            }
+        }
+    } catch (NumberFormatException e) {
+        evt.consume();
+    }
+    }//GEN-LAST:event_txt_promedio_cKeyTyped
+
+    private void txt_Edad_CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Edad_CActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_Edad_CActionPerformed
+
+    private void txt_Edad_CKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_Edad_CKeyReleased
+        // TODO add your handling code here:
+        BusquedaFiltro(jTable2, "seguro_medico", txt_Edad_C.getText());
+    }//GEN-LAST:event_txt_Edad_CKeyReleased
+
+    private void txt_Edad_CKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_Edad_CKeyTyped
+          
+        char caracter=evt.getKeyChar();
+            if(!(caracter>47&&caracter<58)) {
+                evt.consume();
+            }
+             if (txt_edad.getText().trim().length() == 2) {
+        evt.consume();
+            }
+        
+    }//GEN-LAST:event_txt_Edad_CKeyTyped
+
+    private void txt_nombre_cKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_nombre_cKeyReleased
+        // TODO add your handling code here:
+        BusquedaFiltro(jTable2, "Nombre", txt_nombre_c.getText());
+    }//GEN-LAST:event_txt_nombre_cKeyReleased
+
+    private void txt_nombre_cKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_nombre_cKeyTyped
+        // TODO add your handling code here:
+        char car= evt.getKeyChar();
+        if(!(car>64&&car<91||car>96&&car<123||car==32)) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_nombre_cKeyTyped
+
+    private void JM_ConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JM_ConsultasActionPerformed
+         Grafico.setEnabled(true);
+        metodoMagicoParaRestablecerComponentes(txt_numControl_C, txt_nombre_c, txt_primerAp_C, txt_promedio_c, JCB_semestre_C,txt_Edad_C, txt_SegAp_C, lbl_Numcontrol_C, lbl_Nom_C, lbl_primerAp_C, lbl_SegundoAp_C, lbl_carrera_C, lbl_promedio_C, lbl_semestre_C, lbl_edad_c);
+        txt_numControl_C.setEditable(false);
+        txt_nombre_c.setEditable(false);
+        txt_primerAp_C.setEditable(false);
+        txt_promedio_c.setEditable(false);
+        
+        txt_SegAp_C.setEditable(false);
+        JCB_semestre_C.setEnabled(false);
+        txt_Edad_C.setEnabled(true);
+        ABCC.setVisible(false);
+        FrameConsultas.setVisible(true);
+        actualizarTablas(jTable2);
+    }//GEN-LAST:event_JM_ConsultasActionPerformed
+
+    private void jScrollPane8MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane8MouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jScrollPane8MouseReleased
+
+    private void txt_nombre_cActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_nombre_cActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_nombre_cActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1003,15 +1531,24 @@ try {
     private javax.swing.JPanel BG;
     private javax.swing.JButton Boton_Memento;
     private javax.swing.JPanel Fondo;
+    private javax.swing.JLabel Fondo_Consultas;
+    private javax.swing.JLabel Fondo_titulo_Consultas;
+    private javax.swing.JInternalFrame FrameConsultas;
     private javax.swing.JMenuItem Grafico;
+    private javax.swing.ButtonGroup GrupoBotones;
+    private javax.swing.JLabel Icono_Consultas;
     private javax.swing.JComboBox<String> JCB_Carrera;
+    private javax.swing.JComboBox<String> JCB_Carrera_C;
     private javax.swing.JComboBox<String> JCB_Semestre;
+    private javax.swing.JComboBox<String> JCB_semestre_C;
     private javax.swing.JMenuItem JM_Altas;
     private javax.swing.JMenu JM_Alumnos;
     private javax.swing.JMenuItem JM_Bajas;
     private javax.swing.JMenuItem JM_Cambios;
     private javax.swing.JMenuItem JM_Consultas;
     private javax.swing.JMenuItem JM_Funcion;
+    private javax.swing.JPanel PanelConsultas;
+    private javax.swing.JRadioButton RB_Todos_C;
     private javax.swing.JButton btn_altas;
     private javax.swing.JButton btn_bajas;
     private javax.swing.JButton btn_cambios;
@@ -1027,22 +1564,39 @@ try {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JLabel lbl_Edad;
+    private javax.swing.JRadioButton lbl_Nom_C;
+    private javax.swing.JRadioButton lbl_Numcontrol_C;
+    private javax.swing.JRadioButton lbl_SegundoAp_C;
     private javax.swing.JLabel lbl_carrera;
+    private javax.swing.JRadioButton lbl_carrera_C;
+    private javax.swing.JRadioButton lbl_edad_c;
     private javax.swing.JLabel lbl_img;
     private javax.swing.JLabel lbl_nombre;
     private javax.swing.JLabel lbl_numControl;
+    private javax.swing.JRadioButton lbl_primerAp_C;
     private javax.swing.JLabel lbl_primerap;
     private javax.swing.JLabel lbl_promedio;
+    private javax.swing.JRadioButton lbl_promedio_C;
     private javax.swing.JLabel lbl_segundoap;
     private javax.swing.JLabel lbl_semestre;
+    private javax.swing.JRadioButton lbl_semestre_C;
     private javax.swing.JLabel lbl_titulo;
+    private javax.swing.JLabel titulo_Consultas;
+    private javax.swing.JTextField txt_Edad_C;
+    private javax.swing.JTextField txt_SegAp_C;
     private javax.swing.JTextPane txt_edad;
     private javax.swing.JTextPane txt_nombre;
+    private javax.swing.JTextField txt_nombre_c;
+    private javax.swing.JTextField txt_numControl_C;
     private javax.swing.JTextPane txt_numcontrol;
+    private javax.swing.JTextField txt_primerAp_C;
     private javax.swing.JTextPane txt_primerap;
     private javax.swing.JTextPane txt_promedio;
+    private javax.swing.JTextField txt_promedio_c;
     private javax.swing.JTextPane txt_segundoAp;
     // End of variables declaration//GEN-END:variables
 }
