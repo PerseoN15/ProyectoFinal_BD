@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Conexion;
 
 import MODELO.alumno;
@@ -11,53 +7,58 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- *
- * @author anemn
- */
 public class Conexion {
-    private static Connection conexion= null;
-    private static PreparedStatement pstm;
-    private static ResultSet rs;
+    private static Connection conexion = null;
 
     private Conexion() {
-        // Busca el driver y establece la conexión
         try {
             Class.forName("org.postgresql.Driver");
             String URL = "jdbc:postgresql://localhost:5432/proyecto_tutorias";
             conexion = DriverManager.getConnection(URL, "postgres", "itsj");
+            System.out.println("Conexión establecida correctamente.");
         } catch (ClassNotFoundException e) {
-            System.out.println("Error: No se encontró el driver de PostgreSQL.");
+            System.err.println("Error: No se encontró el driver de PostgreSQL.");
             e.printStackTrace();
         } catch (SQLException e) {
-            System.out.println("Error: No se pudo conectar a la base de datos.");
+            System.err.println("Error: No se pudo conectar a la base de datos.");
             e.printStackTrace();
         }
     }
 
     public static Connection getConexion() {
-        if (conexion == null) {
-            new Conexion();
+        try {
+            if (conexion == null || conexion.isClosed()) {
+                new Conexion();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al verificar el estado de la conexión.");
+            e.printStackTrace();
         }
         return conexion;
     }
 
     public static void cerrarConexion() {
         try {
-            if (conexion != null) {
+            if (conexion != null && !conexion.isClosed()) {
                 conexion.close();
-                System.out.println("Conexión cerrada.");
+                System.out.println("Conexión cerrada correctamente.");
             }
         } catch (SQLException e) {
-            System.out.println("Error al cerrar la conexión.");
+            System.err.println("Error al cerrar la conexión.");
             e.printStackTrace();
         }
     }
 
-    // Método para agregar un alumno
     public static boolean AgregarAlumno(alumno a) {
         String sql = "INSERT INTO alumno (NumeroControl, Nombre, PrimerAp, SegundoAp, Carrera, Semestre, Edad, Promedio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement pstm = getConexion().prepareStatement(sql)) {
+        try (Connection conexion = getConexion();
+             PreparedStatement pstm = conexion.prepareStatement(sql)) {
+
+            if (conexion == null || conexion.isClosed()) {
+                System.err.println("Error: Conexión no establecida.");
+                return false;
+            }
+
             pstm.setInt(1, a.getNumeroControl());
             pstm.setString(2, a.getNombre());
             pstm.setString(3, a.getPrimerAp());
@@ -69,30 +70,42 @@ public class Conexion {
             pstm.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("Error en AgregarAlumno:");
+            System.err.println("Error en AgregarAlumno:");
             e.printStackTrace();
         }
         return false;
     }
 
-    // Método para eliminar un alumno
-    public static boolean EliminarAlumno(String instruccion) {
+    public static boolean EliminarAlumno(String numeroControl) {
         String sql = "DELETE FROM alumno WHERE NumeroControl = ?";
-         try {
-            String consulta = instruccion;
-            pstm = conexion.prepareStatement(consulta);
+        try (Connection conexion = getConexion();
+             PreparedStatement pstm = conexion.prepareStatement(sql)) {
+
+            if (conexion == null || conexion.isClosed()) {
+                System.err.println("Error: Conexión no establecida.");
+                return false;
+            }
+
+            pstm.setInt(1, Integer.parseInt(numeroControl));
             pstm.executeUpdate();
             return true;
-        } catch (Exception ex) {
-            System.out.println("ERROR");
+        } catch (SQLException e) {
+            System.err.println("Error en EliminarAlumno:");
+            e.printStackTrace();
         }
         return false;
     }
 
-    // Método para actualizar un alumno
     public static boolean ActualizarAlumno(alumno a) {
         String sql = "UPDATE alumno SET Nombre = ?, PrimerAp = ?, SegundoAp = ?, Carrera = ?, Semestre = ?, Edad = ?, Promedio = ? WHERE NumeroControl = ?";
-        try (PreparedStatement pstm = getConexion().prepareStatement(sql)) {
+        try (Connection conexion = getConexion();
+             PreparedStatement pstm = conexion.prepareStatement(sql)) {
+
+            if (conexion == null || conexion.isClosed()) {
+                System.err.println("Error: Conexión no establecida.");
+                return false;
+            }
+
             pstm.setString(1, a.getNombre());
             pstm.setString(2, a.getPrimerAp());
             pstm.setString(3, a.getSegundorAp());
@@ -104,32 +117,34 @@ public class Conexion {
             pstm.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("Error en ActualizarAlumno:");
+            System.err.println("Error en ActualizarAlumno:");
             e.printStackTrace();
         }
         return false;
     }
 
-    // Método para buscar alumnos
     public static ResultSet BuscarAlumno(String consulta) {
         try {
-            PreparedStatement pstm = getConexion().prepareStatement(consulta);
+            Connection conexion = getConexion();
+            if (conexion == null || conexion.isClosed()) {
+                System.err.println("Error: Conexión no establecida.");
+                return null;
+            }
+            PreparedStatement pstm = conexion.prepareStatement(consulta);
             return pstm.executeQuery();
         } catch (SQLException e) {
-            System.out.println("Error en BuscarAlumno:");
+            System.err.println("Error en BuscarAlumno:");
             e.printStackTrace();
         }
         return null;
     }
 
     public static void main(String[] args) {
-    Connection conexion = Conexion.getConexion();
-   /* if (conexion != null) {
-        System.out.println("Conexion exitosa");
-    } else {
-        System.out.println("No se pudo conectar a la base de datos.");
+        Connection conexion = Conexion.getConexion();
+        if (conexion != null) {
+            System.out.println("Conexión exitosa.");
+        } else {
+            System.err.println("No se pudo conectar a la base de datos.");
+        }
     }
-   */ 
 }
-
-}//class
